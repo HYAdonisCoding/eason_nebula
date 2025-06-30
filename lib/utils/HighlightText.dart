@@ -6,7 +6,7 @@ class HighlightText extends StatelessWidget {
   final TextStyle? style;
   final TextStyle? highlightStyle;
   final Map<String, TextStyle>? highlightStyles;
-  final Map<String, VoidCallback>? highlightTaps; // 新增：指定词的点击事件
+  final Map<String, VoidCallback>? highlightTaps;
 
   const HighlightText({
     Key? key,
@@ -20,10 +20,14 @@ class HighlightText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    if (text.isEmpty) return const SizedBox.shrink();
     if (highlights.isEmpty) {
-      return Text(text, style: style);
+      return Text(text, style: style ?? const TextStyle());
     }
-    final pattern = highlights.map(RegExp.escape).join('|');
+    // 优先匹配长词，避免短词截断长词
+    final sortedHighlights = [...highlights]
+      ..sort((a, b) => b.length.compareTo(a.length));
+    final pattern = sortedHighlights.map(RegExp.escape).join('|');
     final reg = RegExp(pattern);
 
     final spans = <InlineSpan>[];
@@ -31,20 +35,23 @@ class HighlightText extends StatelessWidget {
     reg.allMatches(text).forEach((match) {
       if (match.start > start) {
         spans.add(
-          TextSpan(text: text.substring(start, match.start), style: style),
+          TextSpan(
+            text: text.substring(start, match.start),
+            style: style ?? const TextStyle(),
+          ),
         );
       }
       final matchText = match.group(0)!;
       final ts =
           highlightStyles != null && highlightStyles!.containsKey(matchText)
           ? highlightStyles![matchText]
-          : (highlightStyle ?? style);
+          : (highlightStyle ?? style ?? const TextStyle());
       if (highlightTaps != null && highlightTaps!.containsKey(matchText)) {
         spans.add(
           WidgetSpan(
             alignment: PlaceholderAlignment.baseline,
             baseline: TextBaseline.alphabetic,
-            child: GestureDetector(
+            child: InkWell(
               onTap: highlightTaps![matchText],
               child: Text(matchText, style: ts),
             ),
@@ -56,7 +63,12 @@ class HighlightText extends StatelessWidget {
       start = match.end;
     });
     if (start < text.length) {
-      spans.add(TextSpan(text: text.substring(start), style: style));
+      spans.add(
+        TextSpan(
+          text: text.substring(start),
+          style: style ?? const TextStyle(),
+        ),
+      );
     }
     return RichText(text: TextSpan(children: spans));
   }
