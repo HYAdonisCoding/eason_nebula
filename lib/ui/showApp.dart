@@ -2,6 +2,8 @@ import 'package:eason_nebula/main.dart';
 import 'package:flutter/material.dart';
 
 import '../utils/HighlightText.dart';
+import '../utils/EasonButton.dart';
+import '../utils/EasonImage.dart';
 
 class Showapp extends StatelessWidget {
   const Showapp({super.key});
@@ -65,7 +67,13 @@ class _ShowAppPageState extends State<ShowAppPage> {
                 children: <Widget>[
                   Padding(
                     padding: EdgeInsets.all(10),
-                    child: Image.network(imageUrl),
+                    child: EasonImage(
+                      src: imageUrl,
+                      height: 300,
+                      borderRadius: 12,
+                      placeholder: 'lib/assets/images/feilong_1.jpeg',
+                      onTap: (e) => print('点击了图片: $e'),
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(10),
@@ -103,7 +111,47 @@ class _ShowAppPageState extends State<ShowAppPage> {
                       },
                     ),
                   ),
-                  ElevatedButton(onPressed: _changeTitle, child: Text('点击内容')),
+                  Padding(
+                    padding: EdgeInsets.all(10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: EasonButton(
+                            text: '取消',
+                            onPressed: _changeTitle,
+                            color: Colors.lightGreenAccent,
+                            textColor: Colors.white,
+                            borderRadius: 8,
+                            fontSize: 20,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 12,
+                            ),
+                            enabled: true,
+                            border: BorderSide(color: Colors.blue, width: 1.0),
+                          ),
+                        ),
+                        SizedBox(width: 16), // 按钮间距
+                        Expanded(
+                          child: EasonButton(
+                            text: '切换标题',
+                            onPressed: _changeTitle,
+                            color: Colors.pinkAccent,
+                            textColor: Colors.white,
+                            borderRadius: 8,
+                            fontSize: 20,
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 24,
+                              vertical: 12,
+                            ),
+                            enabled: true,
+                            border: BorderSide(color: Colors.blue, width: 1.0),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ],
               ),
             ),
