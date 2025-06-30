@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
-import 'ui/showApp.dart';
+import 'ui/PersonalInfoInput.dart';
 
 void main() {
-  runApp(const MaterialApp(
-    home: ShowAppPage(),
-  )); // This is the entry point of the application.
+  runApp(
+    const MaterialApp(home: PersonalInfoInputPage()),
+  ); // This is the entry point of the application.
 }
 
 class MyApp extends StatelessWidget {
