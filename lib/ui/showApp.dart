@@ -71,7 +71,7 @@ class _ShowAppPageState extends State<ShowAppPage> {
                     padding: EdgeInsets.all(10),
                     child: HighlightText(
                       text: title,
-                      highlights: ['荷叶', '小青蛙', '小水珠'],
+                      highlights: ['荷叶', '小青蛙', '小水珠', '夏天'],
                       style: TextStyle(fontSize: 20, color: Colors.green),
                       highlightStyles: {
                         '荷叶': TextStyle(
@@ -89,6 +89,17 @@ class _ShowAppPageState extends State<ShowAppPage> {
                           color: Colors.orange,
                           fontWeight: FontWeight.bold,
                         ),
+                        '夏天': TextStyle(
+                          fontSize: 30,
+                          color: Colors.lightGreen,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      },
+                      highlightTaps: {
+                        '荷叶': () => print('点击了荷叶'),
+                        '小青蛙': () => print('点击了小青蛙'),
+                        '夏天': () => print('点击了夏天'),
+                        // 其它词不传则无点击
                       },
                     ),
                   ),

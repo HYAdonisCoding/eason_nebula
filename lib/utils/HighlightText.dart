@@ -5,7 +5,8 @@ class HighlightText extends StatelessWidget {
   final List<String> highlights;
   final TextStyle? style;
   final TextStyle? highlightStyle;
-  final Map<String, TextStyle>? highlightStyles; // 可选：每个高亮词单独样式
+  final Map<String, TextStyle>? highlightStyles;
+  final Map<String, VoidCallback>? highlightTaps; // 新增：指定词的点击事件
 
   const HighlightText({
     Key? key,
@@ -14,6 +15,7 @@ class HighlightText extends StatelessWidget {
     this.style,
     this.highlightStyle,
     this.highlightStyles,
+    this.highlightTaps,
   }) : super(key: key);
 
   @override
@@ -24,23 +26,38 @@ class HighlightText extends StatelessWidget {
     final pattern = highlights.map(RegExp.escape).join('|');
     final reg = RegExp(pattern);
 
-    final spans = <TextSpan>[];
+    final spans = <InlineSpan>[];
     int start = 0;
     reg.allMatches(text).forEach((match) {
       if (match.start > start) {
-        spans.add(TextSpan(text: text.substring(start, match.start), style: style));
+        spans.add(
+          TextSpan(text: text.substring(start, match.start), style: style),
+        );
       }
       final matchText = match.group(0)!;
-      // 优先使用 highlightStyles，其次用 highlightStyle
-      final ts = highlightStyles != null && highlightStyles!.containsKey(matchText)
+      final ts =
+          highlightStyles != null && highlightStyles!.containsKey(matchText)
           ? highlightStyles![matchText]
-          : highlightStyle;
-      spans.add(TextSpan(text: matchText, style: ts));
+          : (highlightStyle ?? style);
+      if (highlightTaps != null && highlightTaps!.containsKey(matchText)) {
+        spans.add(
+          WidgetSpan(
+            alignment: PlaceholderAlignment.baseline,
+            baseline: TextBaseline.alphabetic,
+            child: GestureDetector(
+              onTap: highlightTaps![matchText],
+              child: Text(matchText, style: ts),
+            ),
+          ),
+        );
+      } else {
+        spans.add(TextSpan(text: matchText, style: ts));
+      }
       start = match.end;
     });
     if (start < text.length) {
       spans.add(TextSpan(text: text.substring(start), style: style));
     }
-    return Text.rich(TextSpan(children: spans));
+    return RichText(text: TextSpan(children: spans));
   }
 }
