@@ -16,7 +16,7 @@ class EasonImage extends StatelessWidget {
     required this.src,
     this.width,
     this.height,
-    this.fit = BoxFit.cover,
+    this.fit = BoxFit.contain,
     this.borderRadius = 0,
     this.placeholder,
     this.placeholderWidget,

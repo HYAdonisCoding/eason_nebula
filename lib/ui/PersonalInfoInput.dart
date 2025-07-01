@@ -14,6 +14,7 @@ class _PersonalInfoInputPageState extends State<PersonalInfoInputPage> {
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   final TextEditingController addressController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +41,6 @@ class _PersonalInfoInputPageState extends State<PersonalInfoInputPage> {
           ),
           EasonTextField(
             label: '邮箱',
-            hintText: '请输入邮箱',
             controller: emailController,
             keyboardType: TextInputType.emailAddress,
           ),
@@ -49,6 +49,12 @@ class _PersonalInfoInputPageState extends State<PersonalInfoInputPage> {
             hintText: '请输入详细地址',
             controller: addressController,
             maxLines: 3, // 支持多行输入
+          ),
+          EasonTextField(
+            label: '密码',
+            controller: passwordController,
+            keyboardType: TextInputType.visiblePassword,
+            obscureText: true, // 关键参数
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
@@ -59,6 +65,8 @@ class _PersonalInfoInputPageState extends State<PersonalInfoInputPage> {
                 print('手机号: ${phoneController.text}');
                 print('邮箱: ${emailController.text}');
                 print('地址: ${addressController.text}');
+                print('密码: ${passwordController.text}');
+                // 这里可以添加提交逻辑，比如发送到服务器或保存到本地
               },
               child: const Text('提交'),
             ),

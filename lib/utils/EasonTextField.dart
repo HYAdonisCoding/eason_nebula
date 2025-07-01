@@ -38,7 +38,7 @@ class EasonTextField extends StatelessWidget {
         maxLines: maxLines ?? 1,
         decoration: InputDecoration(
           labelText: label,
-          hintText: hintText,
+          hintText: hintText ?? '请输入$label',
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
           prefixIcon: prefixIcon,
           suffixIcon: suffixIcon,

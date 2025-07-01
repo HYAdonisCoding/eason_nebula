@@ -1,10 +1,11 @@
+import '/ui/HomePage.dart';
 import 'package:flutter/material.dart';
 
 import 'ui/PersonalInfoInput.dart';
 
 void main() {
   runApp(
-    const MaterialApp(home: PersonalInfoInputPage()),
+    MaterialApp(home: HomePage()),
   ); // This is the entry point of the application.
 }
 
