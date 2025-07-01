@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../utils/EasonAppBar.dart';
+import '../utils/EasonBottomAppBar.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -113,6 +114,26 @@ class _HomePageState extends State<HomePage>
             ),
           ],
         ),
+      ),
+      bottomNavigationBar: EasonBottomAppBar(
+        // 可不传，默认主页+设置
+        leftItems: [
+          EasonBottomBarItem(
+            icon: Icons.explore,
+            iconColor: Colors.orange,
+            onTap: () => print('发现'),
+          ),
+          EasonBottomBarItem(
+            icon: Icons.ac_unit,
+            iconColor: Colors.pinkAccent,
+            onTap: () => print('更多'),
+          ),
+        ],
+        onRightAction: () {
+          // 右侧按钮点击
+          print('右侧加号');
+        },
+        // rightWidget: ... // 也可自定义右侧内容
       ),
     );
   }
