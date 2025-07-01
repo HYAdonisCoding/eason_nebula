@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import '../utils/EasonAppBar.dart';
 import '../utils/EasonBottomAppBar.dart';
+import '../utils/EasonTabBar.dart';
+import 'DiscoverPageContent.dart';
+import 'HomePageContent.dart';
+import 'ProfilePageContent.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -10,6 +14,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage>
     with SingleTickerProviderStateMixin {
   int _counter = 0;
+  int _tabIndex = 0;
   double size = 40;
   late AnimationController _controller;
   @override
@@ -32,109 +37,138 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: EasonAppBar(
-        title: 'Home Page',
-        showBack: false, // 首页不显示返回
-        menuItems: [
+    // 根据当前tab动态设置标题和菜单
+    String title;
+    List<EasonMenuItem> menuItems;
+    switch (_tabIndex) {
+      case 0:
+        title = '首页';
+        menuItems = [
           EasonMenuItem(
             title: '扫一扫',
             icon: Icons.qr_code_scanner,
             iconColor: Colors.deepPurple,
-            onTap: () {
-              // 你的操作
-              // Navigator.of(context).pushNamed('/code_scanner');
-              print('扫一扫');
-            },
+            onTap: () => print('扫一扫'),
           ),
+        ];
+        break;
+      case 1:
+        title = '发现';
+        menuItems = [
           EasonMenuItem(
-            title: '个人中心',
-            icon: Icons.person,
-            iconColor: Colors.deepPurple,
-            onTap: () {
-              // 你的操作
-              // Navigator.of(context).pushNamed('/profile');
-              print('个人中心');
-            },
-          ),
-          EasonMenuItem(
-            title: '退出登录',
-            icon: Icons.logout,
-            iconColor: Colors.red,
-            onTap: () {
-              // 你的操作
-              print('退出登录');
-            },
-          ),
-        ],
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.home, size: size, color: Colors.blue),
-                SizedBox(width: 20),
-                Text('Welcome', style: TextStyle(fontSize: 24)),
-                IconButton(
-                  onPressed: _incrementCounter,
-                  icon: Icon(Icons.add),
-                  splashColor: Colors.teal,
-                  highlightColor: Colors.pink,
-                  disabledColor: Colors.grey,
-                  color: Colors.orange,
-                  iconSize: size,
-                ),
-                ImageIcon(
-                  AssetImage('lib/assets/images/magnifyingglass.circle.png'),
-                  size: size,
-                  color: Colors.green,
-                ),
-                Icon(Icons.card_giftcard, size: size, color: Colors.red),
-                // 使用unicode字符
-                Text(
-                  '\u{1F4A1}', // 灯泡图标
-                  style: TextStyle(fontSize: size, color: Colors.yellow),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            AnimatedIcon(
-              icon: AnimatedIcons.menu_arrow,
-              progress: _controller,
-              semanticLabel: 'Show menu',
-            ),
-
-            Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: EasonBottomAppBar(
-        // 可不传，默认主页+设置
-        leftItems: [
-          EasonBottomBarItem(
-            icon: Icons.explore,
+            title: '热门',
+            icon: Icons.local_fire_department,
             iconColor: Colors.orange,
-            onTap: () => print('发现'),
+            onTap: () => print('热门'),
           ),
-          EasonBottomBarItem(
-            icon: Icons.ac_unit,
-            iconColor: Colors.pinkAccent,
-            onTap: () => print('更多'),
+        ];
+        break;
+      case 2:
+        title = '我的';
+        menuItems = [
+          EasonMenuItem(
+            title: '设置',
+            icon: Icons.settings,
+            iconColor: Colors.blue,
+            onTap: () => print('设置'),
           ),
+        ];
+        break;
+      default:
+        title = '首页';
+        menuItems = [];
+    }
+    return Scaffold(
+      appBar: EasonAppBar(title: title, showBack: false, menuItems: menuItems),
+      body: IndexedStack(
+        index: _tabIndex,
+        children: [
+          HomePageContent(), // 首页内容
+          DiscoverPageContent(), // 发现页内容
+          ProfilePageContent(), // 我的页内容
         ],
-        onRightAction: () {
-          // 右侧按钮点击
-          print('右侧加号');
-        },
-        // rightWidget: ... // 也可自定义右侧内容
       ),
+      // Center(
+      //   child: Column(
+      //     mainAxisAlignment: MainAxisAlignment.center,
+      //     children: <Widget>[
+      //       Row(
+      //         mainAxisAlignment: MainAxisAlignment.center,
+      //         children: [
+      //           Icon(Icons.home, size: size, color: Colors.blue),
+      //           SizedBox(width: 20),
+      //           Text('Welcome', style: TextStyle(fontSize: 24)),
+      //           IconButton(
+      //             onPressed: _incrementCounter,
+      //             icon: Icon(Icons.add),
+      //             splashColor: Colors.teal,
+      //             highlightColor: Colors.pink,
+      //             disabledColor: Colors.grey,
+      //             color: Colors.orange,
+      //             iconSize: size,
+      //           ),
+      //           ImageIcon(
+      //             AssetImage('lib/assets/images/magnifyingglass.circle.png'),
+      //             size: size,
+      //             color: Colors.green,
+      //           ),
+      //           Icon(Icons.card_giftcard, size: size, color: Colors.red),
+      //           // 使用unicode字符
+      //           Text(
+      //             '\u{1F4A1}', // 灯泡图标
+      //             style: TextStyle(fontSize: size, color: Colors.yellow),
+      //           ),
+      //         ],
+      //       ),
+      //       SizedBox(height: 20),
+      //       AnimatedIcon(
+      //         icon: AnimatedIcons.menu_arrow,
+      //         progress: _controller,
+      //         semanticLabel: 'Show menu',
+      //       ),
+
+      //       Text('You have pushed the button this many times:'),
+      //       Text(
+      //         '$_counter',
+      //         style: Theme.of(context).textTheme.headlineMedium,
+      //       ),
+      //     ],
+      //   ),
+      // ),
+      bottomNavigationBar: EasonTabBar(
+        items: [
+          EasonTabBarItem(label: '首页', icon: Icons.home_rounded),
+          EasonTabBarItem(label: '发现', icon: Icons.explore_rounded),
+          EasonTabBarItem(label: '我的', icon: Icons.person_rounded),
+        ],
+        currentIndex: _tabIndex,
+        onTap: (i) => setState(() => _tabIndex = i),
+        indicatorGradient: [
+          Colors.purpleAccent,
+          Colors.blueAccent,
+          Colors.cyan,
+        ],
+      ),
+      // EasonBottomAppBar(
+      //   // 可不传，默认主页+设置
+      //   leftItems: [
+      //     EasonBottomBarItem(
+      //       icon: Icons.explore,
+      //       iconColor: Colors.orange,
+      //       onTap: () => print('发现'),
+      //     ),
+      //     EasonBottomBarItem(
+      //       icon: Icons.ac_unit,
+      //       iconColor: Colors.pinkAccent,
+      //       onTap: () => print('更多'),
+      //     ),
+      //   ],
+      //   onRightAction: () {
+      //     // 右侧按钮点击
+      //     print('右侧加号');
+      //   },
+      //   // rightWidget: ... // 也可自定义右侧内容
+      // ),
     );
   }
 }
