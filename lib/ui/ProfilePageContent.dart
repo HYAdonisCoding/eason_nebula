@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'SettingPage.dart';
 
 class ProfilePageContent extends StatelessWidget {
   @override
@@ -47,13 +48,25 @@ class ProfilePageContent extends StatelessWidget {
             _ProfileAction(icon: Icons.favorite, label: '收藏'),
             _ProfileAction(icon: Icons.history, label: '历史'),
             _ProfileAction(icon: Icons.wallet, label: '钱包'),
-            _ProfileAction(icon: Icons.settings, label: '设置'),
+            _ProfileAction(
+              icon: Icons.settings,
+              label: '设置',
+              onTap: () {
+                // 跳转到设置页面
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => SettingPage()),
+                );
+              },
+            ),
           ],
         ),
         SizedBox(height: 32),
         // 个人信息卡片
         Card(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
           elevation: 3,
           child: Column(
             children: [
@@ -93,9 +106,9 @@ class ProfilePageContent extends StatelessWidget {
             label: Text('退出登录', style: TextStyle(fontSize: 16)),
             onPressed: () {
               // 退出登录逻辑
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('已退出登录')),
-              );
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text('已退出登录')));
             },
           ),
         ),
@@ -107,18 +120,22 @@ class ProfilePageContent extends StatelessWidget {
 class _ProfileAction extends StatelessWidget {
   final IconData icon;
   final String label;
-  const _ProfileAction({required this.icon, required this.label});
+  final VoidCallback? onTap; // 新增
+  const _ProfileAction({required this.icon, required this.label, this.onTap});
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        CircleAvatar(
-          backgroundColor: Colors.deepPurple.withOpacity(0.13),
-          child: Icon(icon, color: Colors.deepPurple),
-        ),
-        SizedBox(height: 6),
-        Text(label, style: TextStyle(fontSize: 13)),
-      ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Column(
+        children: [
+          CircleAvatar(
+            backgroundColor: Colors.blueAccent.withOpacity(0.15),
+            child: Icon(icon, color: Colors.blueAccent),
+          ),
+          SizedBox(height: 6),
+          Text(label, style: TextStyle(fontSize: 13)),
+        ],
+      ),
     );
   }
 }

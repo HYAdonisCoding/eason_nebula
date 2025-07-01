@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../utils/EasonAppBar.dart';
 import '../utils/EasonBottomAppBar.dart';
+import '../utils/EasonCupertinoTabBar.dart';
 import '../utils/EasonTabBar.dart';
 import 'DiscoverPageContent.dart';
 import 'HomePageContent.dart';
@@ -135,17 +136,17 @@ class _HomePageState extends State<HomePage>
       //     ],
       //   ),
       // ),
-      bottomNavigationBar: EasonTabBar(
+      bottomNavigationBar: EasonCupertinoTabBar(
         items: [
-          EasonTabBarItem(label: '首页', icon: Icons.home_rounded),
-          EasonTabBarItem(label: '发现', icon: Icons.explore_rounded),
-          EasonTabBarItem(label: '我的', icon: Icons.person_rounded),
+          EasonCupertinoTabBarItem(label: '首页', icon: Icons.home_rounded),
+          EasonCupertinoTabBarItem(label: '发现', icon: Icons.explore_rounded),
+          EasonCupertinoTabBarItem(label: '我的', icon: Icons.person_rounded),
         ],
         currentIndex: _tabIndex,
         onTap: (i) => setState(() => _tabIndex = i),
         indicatorGradient: [
-          Colors.purpleAccent,
           Colors.blueAccent,
+          Colors.purpleAccent,
           Colors.cyan,
         ],
       ),

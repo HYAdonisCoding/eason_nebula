@@ -78,8 +78,11 @@ class EasonAppBar extends StatelessWidget implements PreferredSizeWidget {
                 icon: Icons.home,
                 iconColor: Colors.blue,
                 onTap: () {
+                  Navigator.of(
+                    context,
+                    rootNavigator: true,
+                  ).popUntil((route) => route.isFirst);
                   entry?.remove();
-                  Navigator.of(context).popUntil((route) => route.isFirst);
                 },
               ),
               EasonMenuItem(
