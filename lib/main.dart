@@ -1,11 +1,19 @@
 import '/ui/HomePage.dart';
 import 'package:flutter/material.dart';
 
+import 'ui/LoginPage.dart';
 import 'ui/PersonalInfoInput.dart';
 
 void main() {
   runApp(
-    MaterialApp(home: HomePage()),
+    MaterialApp(
+      home: HomePage(),
+      // 注册路由
+      routes: {
+        '/login': (context) => LoginPage(),
+        '/personalInfoInput': (context) => PersonalInfoInputPage(),
+      },
+    ),
   ); // This is the entry point of the application.
 }
 

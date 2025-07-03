@@ -6,6 +6,7 @@ import '../utils/EasonTabBar.dart';
 import 'DiscoverPageContent.dart';
 import 'HomePageContent.dart';
 import 'ProfilePageContent.dart';
+import 'LoginPage.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -68,10 +69,14 @@ class _HomePageState extends State<HomePage>
         title = '我的';
         menuItems = [
           EasonMenuItem(
-            title: '设置',
-            icon: Icons.settings,
+            title: '登录',
+            icon: Icons.login_outlined,
             iconColor: Colors.blue,
-            onTap: () => print('设置'),
+            onTap: () {
+              print('登录');
+              // 这里可以跳转到登录页面 LoginPage
+              Navigator.pushNamed(context, '/login');
+            },
           ),
         ];
         break;
