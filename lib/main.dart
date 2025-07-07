@@ -3,8 +3,23 @@ import 'package:flutter/material.dart';
 
 import 'ui/LoginPage.dart';
 import 'ui/PersonalInfoInput.dart';
+import 'package:webview_flutter/webview_flutter.dart';
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart'; 
+import 'package:flutter/foundation.dart';
+
+import 'package:webview_flutter_android/webview_flutter_android.dart';
+
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  // iOS 端初始化
+  if (WebViewPlatform.instance == null) {
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      WebViewPlatform.instance = AndroidWebViewPlatform();
+    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+      WebViewPlatform.instance = WebKitWebViewPlatform();
+    }
+  }
   runApp(
     MaterialApp(
       home: HomePage(),
