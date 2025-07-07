@@ -193,52 +193,67 @@ class EasonAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       child: SafeArea(
         bottom: false,
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
-            if (showBack)
-              Align(
-                alignment: Alignment.centerLeft,
-                child: IconButton(
-                  icon: Icon(
-                    Icons.arrow_back_ios_new_rounded,
-                    color: Colors.white,
-                    size: 24,
+        child: SizedBox(
+          height: preferredSize.height,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              if (showBack)
+                SizedBox(
+                  width: 56, // 给返回按钮固定宽度，方便对齐
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.arrow_back_ios_new_rounded,
+                      color: Colors.white,
+                      size: 24,
+                    ),
+                    onPressed: onBack ?? () => Navigator.of(context).maybePop(),
+                    splashRadius: 22,
                   ),
-                  onPressed: onBack ?? () => Navigator.of(context).maybePop(),
+                )
+              else
+                SizedBox(width: 56), // 左侧预留空白，保持居中
+              // 标题部分
+              Expanded(
+                child: Center(
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      letterSpacing: 1.2,
+                      shadows: [
+                        Shadow(
+                          color: Colors.black26,
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+
+              // 右侧按钮
+              SizedBox(
+                width: 56,
+                child: IconButton(
+                  key: _menuKey,
+                  icon: const Icon(
+                    Icons.more_horiz,
+                    color: Colors.white,
+                    size: 26,
+                  ),
+                  onPressed: () => _showCustomPopup(context),
                   splashRadius: 22,
                 ),
               ),
-            Center(
-              child: Text(
-                title,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1.2,
-                  shadows: [
-                    Shadow(
-                      color: Colors.black26,
-                      blurRadius: 4,
-                      offset: Offset(0, 2),
-                    ),
-                  ],
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-            Align(
-              alignment: Alignment.centerRight,
-              child: IconButton(
-                key: _menuKey,
-                icon: Icon(Icons.more_horiz, color: Colors.white, size: 26),
-                onPressed: () => _showCustomPopup(context),
-                splashRadius: 22,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
