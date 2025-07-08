@@ -1,3 +1,4 @@
+import 'package:eason_nebula/utils/EasonAppBar.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
@@ -23,7 +24,7 @@ class _HomePageContentState extends State<HomePageContent> {
   Future<void> _loadHotSearch() async {
     try {
       final String jsonStr = await rootBundle.loadString(
-        'lib/assets/hotsearch.json',
+        'lib/assets/data/hotsearch.json',
       );
       final List<dynamic> list = json.decode(jsonStr);
       list.sort(
@@ -43,74 +44,87 @@ class _HomePageContentState extends State<HomePageContent> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: EdgeInsets.all(24),
+    final menuItems = [
+      EasonMenuItem(
+        title: '扫一扫',
+        icon: Icons.qr_code_scanner,
+        iconColor: Colors.deepPurple,
+        onTap: () => print('扫一扫'),
+      ),
+    ];
+
+    return Column(
       children: [
-        Text(
-          '欢迎回来！',
-          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 16),
-        Card(
-          elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
+        EasonAppBar(title: '首页', menuItems: menuItems, showBack: false,),
+        Expanded(
+          child: ListView(
+            padding: EdgeInsets.all(24),
+            children: [
+              Text(
+                '欢迎回来！',
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 16),
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    backgroundColor: Colors.blueAccent,
+                    child: Icon(Icons.person, color: Colors.white),
+                  ),
+                  title: Text('你好，Eason'),
+                  subtitle: Text('今天也要元气满满哦！'),
+                  trailing: Icon(Icons.arrow_forward_ios, size: 18),
+                  onTap: () {},
+                ),
+              ),
+              SizedBox(height: 24),
+              Text(
+                '快捷功能',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  _QuickAction(icon: Icons.qr_code_scanner, label: '扫一扫'),
+                  _QuickAction(icon: Icons.message, label: '消息'),
+                  _QuickAction(
+                    icon: Icons.settings,
+                    label: '设置',
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => SettingPage()),
+                      );
+                    },
+                  ),
+                  _QuickAction(icon: Icons.star, label: '收藏'),
+                ],
+              ),
+              SizedBox(height: 32),
+              Text(
+                '热搜榜',
+                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 16),
+              if (_hotList.isEmpty)
+                Center(child: CircularProgressIndicator())
+              else ...[
+                _buildTopCard(_hotList[0]),
+                SizedBox(height: 18),
+                ...List.generate(
+                  _hotList.length > 4 ? 3 : _hotList.length - 1,
+                  (i) => _buildMedalCard(_hotList[i + 1], i + 1),
+                ),
+                ..._hotList.skip(4).map((item) => _buildNormalCard(item)),
+              ],
+            ],
           ),
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.blueAccent,
-              child: Icon(Icons.person, color: Colors.white),
-            ),
-            title: Text('你好，Eason'),
-            subtitle: Text('今天也要元气满满哦！'),
-            trailing: Icon(Icons.arrow_forward_ios, size: 18),
-            onTap: () {},
-          ),
         ),
-        SizedBox(height: 24),
-        Text(
-          '快捷功能',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 12),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            _QuickAction(icon: Icons.qr_code_scanner, label: '扫一扫'),
-            _QuickAction(icon: Icons.message, label: '消息'),
-            _QuickAction(
-              icon: Icons.settings,
-              label: '设置',
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => SettingPage()),
-                );
-              },
-            ),
-            _QuickAction(icon: Icons.star, label: '收藏'),
-          ],
-        ),
-        SizedBox(height: 32),
-        Text(
-          '热搜榜',
-          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 16),
-        if (_hotList.isEmpty)
-          Center(child: CircularProgressIndicator())
-        else ...[
-          // 第0个特殊大卡片
-          _buildTopCard(_hotList[0]),
-          SizedBox(height: 18),
-          // 1、2、3 金银铜
-          ...List.generate(
-            _hotList.length > 4 ? 3 : _hotList.length - 1,
-            (i) => _buildMedalCard(_hotList[i + 1], i + 1),
-          ),
-          // 其余普通卡片
-          ..._hotList.skip(4).map((item) => _buildNormalCard(item)),
-        ],
       ],
     );
   }

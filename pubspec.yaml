@@ -38,6 +38,7 @@ dependencies:
   webview_flutter: ^4.0.7
   webview_flutter_wkwebview: ^3.14.0
   webview_flutter_android: ^3.14.0
+  http: ^0.13.6 # 或使用最新版本
 
 dev_dependencies:
   flutter_test:
@@ -65,6 +66,7 @@ flutter:
     # - images/a_dot_burr.jpeg
     # - images/a_dot_ham.jpeg
     - lib/assets/images/
+    - lib/assets/data/
     - lib/assets/
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg

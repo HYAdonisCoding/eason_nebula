@@ -1,3 +1,7 @@
+import 'package:eason_nebula/ui/DetailNotePage.dart';
+import 'package:eason_nebula/utils/EasonAppBar.dart';
+
+import 'CommentPage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
@@ -21,7 +25,7 @@ class _DiscoverPageContentState extends State<DiscoverPageContent> {
   Future<void> _loadRedNote() async {
     try {
       final String jsonStr = await rootBundle.loadString(
-        'lib/assets/rednote.json',
+        'lib/assets/data/rednote.json',
       );
       final Map<String, dynamic> decoded = json.decode(jsonStr);
       final List<dynamic> rawList = decoded['data']?['items'] ?? [];
@@ -69,55 +73,68 @@ class _DiscoverPageContentState extends State<DiscoverPageContent> {
 
   @override
   Widget build(BuildContext context) {
+    final menuItems = [
+      EasonMenuItem(
+        title: '热门',
+        icon: Icons.local_fire_department,
+        iconColor: Colors.orange,
+        onTap: () => print('热门'),
+      ),
+    ];
+
     return RefreshIndicator(
       onRefresh: _loadRedNote,
-      child: ListView(
-        padding: EdgeInsets.all(24),
+      child: Column(
         children: [
-          Text(
-            '发现',
-            style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 16),
-          Card(
-            elevation: 3,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: ListTile(
-              leading: Icon(Icons.search, color: Colors.deepPurple, size: 32),
-              title: Text('全网热搜'),
-              subtitle: Text('看看大家都在关注什么'),
-              trailing: Icon(Icons.arrow_forward_ios, size: 18),
-              onTap: () {},
-            ),
-          ),
-          SizedBox(height: 24),
-
-          Text(
-            '热门话题',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 12),
-          Wrap(
-            spacing: 12,
-            runSpacing: 12,
-            children: List.generate(
-              6,
-              (i) => Chip(
-                label: Text('话题 ${i + 1}'),
-                backgroundColor: Colors.purpleAccent.withOpacity(0.1),
-                avatar: Icon(
-                  Icons.local_fire_department,
-                  color: Colors.purpleAccent,
-                  size: 18,
+          EasonAppBar(title: '发现', menuItems: menuItems, showBack: false),
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.all(24),
+              children: [
+                Card(
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.search,
+                      color: Colors.deepPurple,
+                      size: 32,
+                    ),
+                    title: Text('全网热搜'),
+                    subtitle: Text('看看大家都在关注什么'),
+                    trailing: Icon(Icons.arrow_forward_ios, size: 18),
+                    onTap: () {},
+                  ),
                 ),
-              ),
+                SizedBox(height: 24),
+                Text(
+                  '热门话题',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 12),
+                Wrap(
+                  spacing: 12,
+                  runSpacing: 12,
+                  children: List.generate(
+                    6,
+                    (i) => Chip(
+                      label: Text('话题 ${i + 1}'),
+                      backgroundColor: Colors.purpleAccent.withOpacity(0.1),
+                      avatar: Icon(
+                        Icons.local_fire_department,
+                        color: Colors.purpleAccent,
+                        size: 18,
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 32),
+                _buildRecommendationSection(),
+              ],
             ),
           ),
-          SizedBox(height: 32),
-
-          _buildRecommendationSection(),
         ],
       ),
     );
@@ -150,6 +167,17 @@ class DiscoverGridItemCard extends StatelessWidget {
         child: InkWell(
           onTap: () {
             print('点击了：$title');
+            // 这里可以添加跳转到详情页的逻辑
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (_) {
+                  // 传递 item 到 CommentPage
+                  // 这里可以根据实际情况传递 item 的数据
+                  return DetailNotePage(item: item);
+                },
+              ),
+            );
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -166,7 +194,7 @@ class DiscoverGridItemCard extends StatelessWidget {
                   clipBehavior: Clip.antiAlias,
                   child: coverUrl.isNotEmpty
                       ? FadeInImage.assetNetwork(
-                          placeholder: 'lib/assets/images/placeholder.png',
+                          placeholder: 'lib/assets/images/loading_64.png',
                           image: coverUrl,
                           fit: BoxFit.cover,
                           width: double.infinity,

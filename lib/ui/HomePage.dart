@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import '../utils/EasonAppBar.dart';
 import '../utils/EasonBottomAppBar.dart';
 import '../utils/EasonCupertinoTabBar.dart';
 import '../utils/EasonTabBar.dart';
@@ -39,53 +38,7 @@ class _HomePageState extends State<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    // 根据当前tab动态设置标题和菜单
-    String title;
-    List<EasonMenuItem> menuItems;
-    switch (_tabIndex) {
-      case 0:
-        title = '首页';
-        menuItems = [
-          EasonMenuItem(
-            title: '扫一扫',
-            icon: Icons.qr_code_scanner,
-            iconColor: Colors.deepPurple,
-            onTap: () => print('扫一扫'),
-          ),
-        ];
-        break;
-      case 1:
-        title = '发现';
-        menuItems = [
-          EasonMenuItem(
-            title: '热门',
-            icon: Icons.local_fire_department,
-            iconColor: Colors.orange,
-            onTap: () => print('热门'),
-          ),
-        ];
-        break;
-      case 2:
-        title = '我的';
-        menuItems = [
-          EasonMenuItem(
-            title: '登录',
-            icon: Icons.login_outlined,
-            iconColor: Colors.blue,
-            onTap: () {
-              print('登录');
-              // 这里可以跳转到登录页面 LoginPage
-              Navigator.pushNamed(context, '/login');
-            },
-          ),
-        ];
-        break;
-      default:
-        title = '首页';
-        menuItems = [];
-    }
     return Scaffold(
-      appBar: EasonAppBar(title: title, showBack: false, menuItems: menuItems),
       body: IndexedStack(
         index: _tabIndex,
         children: [
