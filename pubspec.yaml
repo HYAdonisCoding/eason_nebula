@@ -38,7 +38,9 @@ dependencies:
   webview_flutter: ^4.0.7
   webview_flutter_wkwebview: ^3.14.0
   webview_flutter_android: ^3.14.0
-  http: ^0.13.6 # 或使用最新版本
+  http: ^1.1.0
+  lpinyin: ^2.0.3
+  extended_image: ^8.2.0
 
 dev_dependencies:
   flutter_test:

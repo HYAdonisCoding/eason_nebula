@@ -34,7 +34,146 @@ class EasonAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Size get preferredSize => Size.fromHeight(56);
+  void _showCustomPopup(BuildContext context) {
+    final RenderBox button =
+        _menuKey.currentContext!.findRenderObject() as RenderBox;
+    final RenderBox overlay =
+        Overlay.of(context).context.findRenderObject() as RenderBox;
+    final Offset position = button.localToGlobal(
+      Offset.zero,
+      ancestor: overlay,
+    );
 
+    const double popupWidth = 180;
+    const double arrowWidth = 24;
+    const double arrowHeight = 12;
+    final double screenWidth = overlay.size.width;
+
+    // 让弹框水平居中于按钮
+    double left = position.dx + button.size.width / 2 - popupWidth / 2;
+    // 边界修正
+    if (left < 8) left = 8;
+    if (left + popupWidth > screenWidth - 8)
+      left = screenWidth - popupWidth - 8;
+
+    final double top = position.dy + button.size.height + 8;
+
+    // 箭头相对弹框的left
+    double arrowLeft =
+        position.dx + button.size.width / 2 - arrowWidth / 2 - left;
+    // 箭头也做边界修正
+    if (arrowLeft < 8) arrowLeft = 8;
+    if (arrowLeft + arrowWidth > popupWidth - 8)
+      arrowLeft = popupWidth - arrowWidth - 8;
+
+    OverlayEntry? entry;
+    entry = OverlayEntry(
+      builder: (context) {
+        final items =
+            menuItems ??
+            [
+              EasonMenuItem(
+                title: '回到首页',
+                icon: Icons.home,
+                iconColor: Colors.blue,
+                onTap: () {
+                  Navigator.of(
+                    context,
+                    rootNavigator: true,
+                  ).popUntil((route) => route.isFirst);
+                  entry?.remove();
+                },
+              ),
+              EasonMenuItem(
+                title: '联系客服',
+                icon: Icons.support_agent,
+                iconColor: Colors.green,
+                onTap: () {
+                  entry?.remove();
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text('联系客服功能待实现')));
+                },
+              ),
+            ];
+        return Stack(
+          children: [
+            // 点击遮罩关闭弹框
+            GestureDetector(
+              onTap: () => entry?.remove(),
+              child: Container(
+                color: Colors.transparent,
+                width: overlay.size.width,
+                height: overlay.size.height,
+              ),
+            ),
+            Positioned(
+              left: left,
+              top: top,
+              child: Material(
+                color: Colors.transparent,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 箭头
+                    Padding(
+                      padding: EdgeInsets.only(left: arrowLeft),
+                      child: CustomPaint(
+                        size: Size(arrowWidth, arrowHeight),
+                        painter: _TrianglePainter(color: Colors.white),
+                      ),
+                    ),
+                    // 弹框内容
+                    Container(
+                      width: popupWidth,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black26,
+                            blurRadius: 10,
+                            offset: Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: items.asMap().entries.map((entryItem) {
+                          final idx = entryItem.key;
+                          final item = entryItem.value;
+                          return Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              ListTile(
+                                leading: Icon(item.icon, color: item.iconColor),
+                                title: Text(
+                                  item.title,
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                onTap: () {
+                                  entry?.remove(); // 先关闭弹框
+                                  item.onTap(); // 再执行用户回调
+                                },
+                              ),
+                              if (idx != items.length - 1) Divider(height: 1),
+                            ],
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+    Overlay.of(context).insert(entry);
+  }
+
+  final GlobalKey _menuKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -79,7 +218,10 @@ class EasonAppBar extends StatelessWidget implements PreferredSizeWidget {
                     return IconButton(
                       icon: item.icon != null
                           ? Icon(item.icon, color: item.iconColor, size: 22)
-                          : Text(item.title, style: TextStyle(color: Colors.white)),
+                          : Text(
+                              item.title,
+                              style: TextStyle(color: Colors.white),
+                            ),
                       onPressed: item.onTap,
                       splashRadius: 22,
                     );
@@ -116,24 +258,14 @@ class EasonAppBar extends StatelessWidget implements PreferredSizeWidget {
               SizedBox(
                 width: 56,
                 child: IconButton(
-                  icon: menuItems != null && menuItems!.isNotEmpty
-                      ? (menuItems!.first.icon != null
-                          ? Icon(
-                              menuItems!.first.icon,
-                              color: menuItems!.first.iconColor,
-                              size: 26,
-                            )
-                          : Text(menuItems!.first.title, style: TextStyle(color: Colors.white)))
-                      : const Icon(
-                          Icons.more_horiz,
-                          color: Colors.white,
-                          size: 26,
-                        ),
-                  onPressed: () {
-                    if (menuItems != null && menuItems!.isNotEmpty) {
-                      menuItems!.first.onTap();
-                    }
-                  },
+                  key: _menuKey,
+                  icon: const Icon(
+                    Icons.more_horiz,
+                    color: Colors.white,
+                    size: 26,
+                  ),
+                  onPressed: () => _showCustomPopup(context),
+
                   splashRadius: 22,
                 ),
               ),

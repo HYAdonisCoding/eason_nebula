@@ -1,5 +1,6 @@
 import 'package:eason_nebula/ui/DetailNotePage.dart';
 import 'package:eason_nebula/utils/EasonAppBar.dart';
+import 'package:extended_image/extended_image.dart';
 
 import 'CommentPage.dart';
 import 'package:flutter/material.dart';
@@ -29,7 +30,7 @@ class _DiscoverPageContentState extends State<DiscoverPageContent> {
       );
       final Map<String, dynamic> decoded = json.decode(jsonStr);
       final List<dynamic> rawList = decoded['data']?['items'] ?? [];
-      print('共加载 ${rawList.length} 条记录');
+      // print('共加载 ${rawList.length} 条记录');
       // 过滤非法项并确保 index 可比较
       final List<dynamic> filteredList = rawList.where((item) {
         final noteCard = item['note_card'];
@@ -39,7 +40,7 @@ class _DiscoverPageContentState extends State<DiscoverPageContent> {
       setState(() {
         _hotList = filteredList;
         // 若需调试，可用 debugPrint('共加载 ${filteredList.length} 条记录');
-        print('共加载 ${filteredList.length} 条记录');
+        // print('共加载 ${filteredList.length} 条记录');
       });
     } catch (e) {
       debugPrint('加载热搜失败: $e');
@@ -79,6 +80,12 @@ class _DiscoverPageContentState extends State<DiscoverPageContent> {
         icon: Icons.local_fire_department,
         iconColor: Colors.orange,
         onTap: () => print('热门'),
+      ),
+      EasonMenuItem(
+        title: '刷新',
+        icon: Icons.refresh_sharp,
+        iconColor: Colors.orange,
+        onTap: () => _loadRedNote,
       ),
     ];
 
@@ -193,11 +200,30 @@ class DiscoverGridItemCard extends StatelessWidget {
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: coverUrl.isNotEmpty
-                      ? FadeInImage.assetNetwork(
-                          placeholder: 'lib/assets/images/loading_64.png',
-                          image: coverUrl,
+                      ? ExtendedImage.network(
+                          coverUrl,
+                          headers: {
+                            'User-Agent':
+                                'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+                            'Referer': 'https://www.xiaohongshu.com/',
+                          },
                           fit: BoxFit.cover,
                           width: double.infinity,
+                          loadStateChanged: (state) {
+                            switch (state.extendedImageLoadState) {
+                              case LoadState.loading:
+                                return Center(
+                                  child: Image.asset(
+                                    'lib/assets/images/loading_64.png',
+                                    fit: BoxFit.cover,
+                                  ),
+                                );
+                              case LoadState.failed:
+                                return Container(color: Colors.grey[300]);
+                              case LoadState.completed:
+                                return null;
+                            }
+                          },
                         )
                       : Container(color: Colors.grey[300]),
                 ),

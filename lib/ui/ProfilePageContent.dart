@@ -1,9 +1,17 @@
 import 'package:eason_nebula/utils/EasonAppBar.dart';
 import 'package:flutter/material.dart';
+import 'dart:math'; // 添加此导入
 import 'SettingPage.dart';
 import 'CitySelectedPage.dart';
 
-class ProfilePageContent extends StatelessWidget {
+class ProfilePageContent extends StatefulWidget {
+  @override
+  _ProfilePageContentState createState() => _ProfilePageContentState();
+}
+
+class _ProfilePageContentState extends State<ProfilePageContent> {
+  String _selectedCityTitle = '城市';
+
   @override
   Widget build(BuildContext context) {
     final menuItems = [
@@ -26,13 +34,22 @@ class ProfilePageContent extends StatelessWidget {
           showBack: false,
           leadingMenuItems: [
             EasonMenuItem(
-              title: '城市',
-              onTap: () {
-                // 跳转到城市选择页面
-                Navigator.push(
+              title: _selectedCityTitle,
+              onTap: () async {
+                final result = await Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => CitySelectedPage()),
                 );
+                print('Selected city1: $result');
+                if (result != null && mounted) {
+                  setState(() {
+                    // 更新选中的城市标题
+                    print('Selected city: $result');
+                    _selectedCityTitle =
+                        '${(result['province'] ?? '').toString().substring(0, min(3, (result['province'] ?? '').toString().length))}'
+                            .trim();
+                  });
+                }
               },
             ),
           ],
@@ -41,7 +58,6 @@ class ProfilePageContent extends StatelessWidget {
           child: ListView(
             padding: EdgeInsets.all(24),
             children: [
-              // 头像和昵称
               Center(
                 child: Column(
                   children: [
@@ -88,7 +104,6 @@ class ProfilePageContent extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 28),
-              // 操作入口
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
@@ -99,7 +114,6 @@ class ProfilePageContent extends StatelessWidget {
                     icon: Icons.settings,
                     label: '设置',
                     onTap: () {
-                      // 跳转到设置页面
                       Navigator.push(
                         context,
                         MaterialPageRoute(builder: (_) => SettingPage()),
@@ -109,7 +123,6 @@ class ProfilePageContent extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 32),
-              // 个人信息卡片
               Card(
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
@@ -141,7 +154,6 @@ class ProfilePageContent extends StatelessWidget {
                 ),
               ),
               SizedBox(height: 32),
-              // 退出登录
               Center(
                 child: ElevatedButton.icon(
                   style: ElevatedButton.styleFrom(
@@ -152,7 +164,6 @@ class ProfilePageContent extends StatelessWidget {
                   icon: Icon(Icons.logout),
                   label: Text('退出登录', style: TextStyle(fontSize: 16)),
                   onPressed: () {
-                    // 退出登录逻辑
                     ScaffoldMessenger.of(
                       context,
                     ).showSnackBar(SnackBar(content: Text('已退出登录')));
@@ -170,7 +181,7 @@ class ProfilePageContent extends StatelessWidget {
 class _ProfileAction extends StatelessWidget {
   final IconData icon;
   final String label;
-  final VoidCallback? onTap; // 新增
+  final VoidCallback? onTap;
   const _ProfileAction({required this.icon, required this.label, this.onTap});
   @override
   Widget build(BuildContext context) {

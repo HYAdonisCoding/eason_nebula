@@ -84,11 +84,11 @@ class _CommentPageState extends State<CommentPage> {
         Uri.parse(url),
         headers: {
           'User-Agent':
-              'Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
+              'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
           'Referer': 'https://www.xiaohongshu.com/',
           'Origin': 'https://www.xiaohongshu.com',
           'Cookie':
-              'abRequestId=6a612ccd-8dd1-5d96-b068-f995c47883ed; webBuild=4.72.0; a1=197e7dfb5505afoh7k37royn5a1imecpv6rvgvsdq30000416866; webId=bec44738d495873c31bc07cf63b3f9dc; web_session=030037af5fd776122d784fc5142f4a90de8783; gid=yjWdWfifS4hJyjWdWfiD2KhM2820ilxWTqWFFfAlvI20yhq836dSUk8884yKYKK8qJ2ffY8j; xsecappid=xhs-pc-web; unread={%22ub%22:%226865c86e000000000b02e1f5%22%2C%22ue%22:%22684d630f000000000303d32f%22%2C%22uc%22:30}; loadts=1751944226570; websectiga=634d3ad75ffb42a2ade2c5e1705a73c845837578aeb31ba0e442d75c648da36a; acw_tc=0a0bb37217519564009478707e26c3e1fceffddfeeeba3681ad194b67c542a', // 如果你用到了该请求头，可补上
+              'abRequestId=d56346ab-b128-53f8-90ae-02df68a79a68; webBuild=4.72.0; a1=197ecc73b2856s3u00rp2wazu32g4e17hcpphxwwg30000136672; webId=ad7987f65042c5036d4ff529eea08fdd; gid=yjWdSSW4YYxKyjWdSSWqDSCEJY2KMq788FUJUEkE0u7qJUq8k4dyWx888yqKKWJ84Ji0WY4q; unread={%22ub%22:%22684aacd50000000021001688%22%2C%22ue%22:%2268626516000000002201ebb2%22%2C%22uc%22:28}; web_session=040069b234715130a9c6f781583a4b924a0f4f; customer-sso-sid=68c517524892465105587085leya9gmbsqjsixiq; x-user-id-creator.xiaohongshu.com=63403219000000001802f990; customerClientId=783964759566655; access-token-creator.xiaohongshu.com=customer.creator.AT-68c517524892465105587086bht4muukufw7kuzn; galaxy_creator_session_id=nvs56xaFtWMTKOxgSoVOrMbbsa7fDCdqSwzQ; galaxy.creator.beaker.session.id=1752025556325091492911; loadts=1752030047500; acw_tc=0ad585a917520300478796746e70204a62739238767b7fad7045862d63e401; xsecappid=ugc; websectiga=10f9a40ba454a07755a08f27ef8194c53637eba4551cf9751c009d9afb564467; sec_poison_id=3e4cba17-abfb-4045-9d3a-9afab5d31404', // 如果你用到了该请求头，可补上
           // 你也可以加上 Cookie/X-Sec-Token/X-Timestamp 等字段（如果服务端验证）
         },
       );
