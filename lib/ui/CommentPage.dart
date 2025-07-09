@@ -1,18 +1,49 @@
 import 'dart:convert';
+import 'package:eason_nebula/ui/Base/EasonBasePage.dart';
 import 'package:eason_nebula/utils/EasonAppBar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:eason_nebula/utils/EasonEmoji.dart'; // 确保你有这个文件，里面包含了表情代码和对应的图片 URL
 
-class CommentPage extends StatefulWidget {
+class CommentPage extends EasonBasePage {
   final Map<String, dynamic> item;
-  const CommentPage({Key? key, required this.item}) : super(key: key);
+  CommentPage({Key? key, required this.item}) : super(key: key);
+
+  late final _CommentPageBodyState? _bodyState;
 
   @override
-  _CommentPageState createState() => _CommentPageState();
+  String get title => item['note_card']['display_title'] ?? '评论';
+
+  @override
+  List<EasonMenuItem> menuItems(BuildContext context) => [
+    EasonMenuItem(
+      title: '刷新',
+      icon: Icons.refresh,
+      iconColor: Colors.blueAccent,
+      onTap: () => _bodyState?.fetchComments(),
+    ),
+  ];
+
+  @override
+  Widget buildContent(BuildContext context) {
+    return _CommentPageBody(
+      item: item,
+      onInitState: (state) => _bodyState = state,
+    );
+  }
 }
 
-class _CommentPageState extends State<CommentPage> {
+class _CommentPageBody extends StatefulWidget {
+  final Map<String, dynamic> item;
+  final void Function(_CommentPageBodyState)? onInitState;
+  const _CommentPageBody({Key? key, required this.item, this.onInitState})
+    : super(key: key);
+
+  @override
+  State<_CommentPageBody> createState() => _CommentPageBodyState();
+}
+
+class _CommentPageBodyState extends State<_CommentPageBody> {
   List<dynamic> _comments = [];
   bool _isLoading = false;
 
@@ -63,6 +94,7 @@ class _CommentPageState extends State<CommentPage> {
   @override
   void initState() {
     super.initState();
+    widget.onInitState?.call(this);
     _emojiMapFuture = EasonEmoji.loadEmojiMap();
     fetchComments();
   }
@@ -118,117 +150,101 @@ class _CommentPageState extends State<CommentPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: EasonAppBar(
-        title: widget.item['note_card']['display_title'] ?? '评论',
-        showBack: true,
-        menuItems: [
-          EasonMenuItem(
-            title: '刷新',
-            icon: Icons.refresh,
-            iconColor: Colors.blueAccent,
-            onTap: () {
-              fetchComments();
-            },
-          ),
-        ],
-      ),
-      body: RefreshIndicator(
-        onRefresh: fetchComments,
-        child: _isLoading
-            ? Center(child: CircularProgressIndicator())
-            : ListView.builder(
-                itemCount: _comments.length,
-                itemBuilder: (context, index) {
-                  final comment = _comments[index];
-                  return Card(
-                    margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                    elevation: 2,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          CircleAvatar(
-                            radius: 20,
-                            backgroundColor: Colors.grey[300],
-                            backgroundImage: NetworkImage(
-                              comment['user_info']?['image'] ?? '',
-                            ),
+    return RefreshIndicator(
+      onRefresh: fetchComments,
+      child: _isLoading
+          ? Center(child: CircularProgressIndicator())
+          : ListView.builder(
+              itemCount: _comments.length,
+              itemBuilder: (context, index) {
+                final comment = _comments[index];
+                return Card(
+                  margin: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CircleAvatar(
+                          radius: 20,
+                          backgroundColor: Colors.grey[300],
+                          backgroundImage: NetworkImage(
+                            comment['user_info']?['image'] ?? '',
                           ),
-                          SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  comment['user_info']?['nickname'] ?? '匿名用户',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14,
-                                  ),
+                        ),
+                        SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                comment['user_info']?['nickname'] ?? '匿名用户',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14,
                                 ),
-                                SizedBox(height: 6),
-                                FutureBuilder<Map<String, String>>(
-                                  future: _emojiMapFuture,
-                                  builder: (context, snapshot) {
-                                    if (!snapshot.hasData) {
-                                      return Text(comment['content'] ?? '');
-                                    }
-                                    return FutureBuilder<List<InlineSpan>>(
-                                      future: parseContentWithEmojis(
-                                        comment['content'] ?? '',
-                                        snapshot.data!,
-                                      ),
-                                      builder: (context, emojiSnapshot) {
-                                        if (!emojiSnapshot.hasData) {
-                                          return Text(comment['content'] ?? '');
-                                        }
-                                        return RichText(
-                                          text: TextSpan(
-                                            children: emojiSnapshot.data!,
-                                            style: TextStyle(
-                                              fontSize: 15,
-                                              color: Colors.black87,
-                                              height: 1.4,
-                                            ),
+                              ),
+                              SizedBox(height: 6),
+                              FutureBuilder<Map<String, String>>(
+                                future: _emojiMapFuture,
+                                builder: (context, snapshot) {
+                                  if (!snapshot.hasData) {
+                                    return Text(comment['content'] ?? '');
+                                  }
+                                  return FutureBuilder<List<InlineSpan>>(
+                                    future: parseContentWithEmojis(
+                                      comment['content'] ?? '',
+                                      snapshot.data!,
+                                    ),
+                                    builder: (context, emojiSnapshot) {
+                                      if (!emojiSnapshot.hasData) {
+                                        return Text(comment['content'] ?? '');
+                                      }
+                                      return RichText(
+                                        text: TextSpan(
+                                          children: emojiSnapshot.data!,
+                                          style: TextStyle(
+                                            fontSize: 15,
+                                            color: Colors.black87,
+                                            height: 1.4,
                                           ),
-                                        );
-                                      },
-                                    );
-                                  },
-                                ),
-                                SizedBox(height: 8),
-                                Row(
-                                  children: [
-                                    Icon(
-                                      Icons.thumb_up_alt_outlined,
-                                      size: 14,
+                                        ),
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
+                              SizedBox(height: 8),
+                              Row(
+                                children: [
+                                  Icon(
+                                    Icons.thumb_up_alt_outlined,
+                                    size: 14,
+                                    color: Colors.grey,
+                                  ),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    '${comment['like_count'] ?? 0}',
+                                    style: TextStyle(
+                                      fontSize: 12,
                                       color: Colors.grey,
                                     ),
-                                    SizedBox(width: 4),
-                                    Text(
-                                      '${comment['like_count'] ?? 0}',
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
-                  );
-                },
-              ),
-      ),
+                  ),
+                );
+              },
+            ),
     );
   }
 }

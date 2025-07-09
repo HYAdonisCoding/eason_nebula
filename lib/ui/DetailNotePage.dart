@@ -1,17 +1,48 @@
+import 'package:eason_nebula/ui/Base/EasonBasePage.dart';
 import 'package:eason_nebula/ui/CommentPage.dart';
 import 'package:eason_nebula/utils/EasonAppBar.dart';
+import 'package:eason_nebula/utils/EasonGlobal.dart';
 import 'package:flutter/material.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
-class DetailNotePage extends StatefulWidget {
-  final Map<String, dynamic> item;
+class DetailNotePage extends EasonBasePage {
   const DetailNotePage({Key? key, required this.item}) : super(key: key);
 
+  final Map<String, dynamic> item;
+
   @override
-  State<DetailNotePage> createState() => _DetailNotePageState();
+  String get title => '笔记详情';
+
+  @override
+  List<EasonMenuItem> menuItems(BuildContext context) => [
+    EasonMenuItem(
+      title: '评论',
+      icon: Icons.comment,
+      iconColor: Colors.blueAccent,
+      onTap: () {
+        Navigator.push(
+          navigatorKey.currentContext!,
+          MaterialPageRoute(builder: (_) => CommentPage(item: item)),
+        );
+      },
+    ),
+  ];
+
+  @override
+  Widget buildContent(BuildContext context) {
+    return _DetailNoteContent(item: item);
+  }
 }
 
-class _DetailNotePageState extends State<DetailNotePage> {
+class _DetailNoteContent extends StatefulWidget {
+  final Map<String, dynamic> item;
+  const _DetailNoteContent({required this.item});
+
+  @override
+  State<_DetailNoteContent> createState() => _DetailNoteContentState();
+}
+
+class _DetailNoteContentState extends State<_DetailNoteContent> {
   bool isLoading = true;
   late final WebViewController _webViewController;
 
@@ -55,27 +86,6 @@ class _DetailNotePageState extends State<DetailNotePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: EasonAppBar(
-        title: '笔记详情',
-        menuItems: [
-          EasonMenuItem(
-            title: '评论详情',
-            icon: Icons.refresh,
-            iconColor: Colors.blueAccent,
-            onTap: () {
-              // 跳转到评论页面
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) {
-                    return CommentPage(item: widget.item);
-                  },
-                ),
-              );
-            },
-          ),
-        ],
-      ),
       body: Stack(
         children: [
           WebViewWidget(controller: _webViewController),

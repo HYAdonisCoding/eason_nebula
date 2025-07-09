@@ -1,17 +1,31 @@
 import 'package:eason_nebula/utils/EasonMessenger.dart';
 import 'package:lpinyin/lpinyin.dart';
-import 'package:eason_nebula/utils/EasonAppBar.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:eason_nebula/ui/Base/EasonBasePage.dart';
 
 // 城市选择页面，支持省 -> 市 -> 区三级展开展示
-class CitySelectedPage extends StatefulWidget {
+class CitySelectedPage extends EasonBasePage {
+  const CitySelectedPage({Key? key}) : super(key: key);
+
   @override
-  _CitySelectedPageState createState() => _CitySelectedPageState();
+  String get title => '选择';
+
+  @override
+  Widget buildContent(BuildContext context) {
+    return _CitySelectedPageBody(); // 把页面内容放入 StateLess/Stateful 子组件中更清晰
+  }
 }
 
-class _CitySelectedPageState extends State<CitySelectedPage> {
+// 页面主体作为 StatefulWidget 抽出来
+class _CitySelectedPageBody extends StatefulWidget {
+  @override
+  State<_CitySelectedPageBody> createState() => _CitySelectedPageState();
+}
+
+// 城市选择页面的状态
+class _CitySelectedPageState extends State<_CitySelectedPageBody> {
   final ScrollController _scrollController = ScrollController();
   List<dynamic> cityData = [];
   final Map<String, GlobalKey> _provinceKeys = {};
@@ -205,7 +219,6 @@ class _CitySelectedPageState extends State<CitySelectedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: EasonAppBar(title: '省市区选择'),
       body: cityData.isEmpty
           ? Center(child: CircularProgressIndicator())
           : _buildCityList(),

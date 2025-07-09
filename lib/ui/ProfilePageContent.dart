@@ -1,6 +1,7 @@
 import 'package:eason_nebula/utils/EasonAppBar.dart';
 import 'package:flutter/material.dart';
 import 'dart:math'; // 添加此导入
+import 'package:shared_preferences/shared_preferences.dart';
 import 'SettingPage.dart';
 import 'CitySelectedPage.dart';
 
@@ -13,6 +14,22 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
   String _selectedCityTitle = '城市';
 
   @override
+  void initState() {
+    super.initState();
+    _loadSavedCity();
+  }
+
+  Future<void> _loadSavedCity() async {
+    final prefs = await SharedPreferences.getInstance();
+    final savedCity = prefs.getString('selectedCityTitle');
+    if (savedCity != null && mounted) {
+      setState(() {
+        _selectedCityTitle = savedCity;
+      });
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     final menuItems = [
       EasonMenuItem(
@@ -20,8 +37,15 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
         icon: Icons.login_outlined,
         iconColor: Colors.blue,
         onTap: () {
-          print('登录');
           Navigator.pushNamed(context, '/login');
+        },
+      ),
+      EasonMenuItem(
+        title: '关于',
+        icon: Icons.info_outline,
+        iconColor: Colors.blue,
+        onTap: () {
+          Navigator.pushNamed(context, '/aboutPage');
         },
       ),
     ];
@@ -43,12 +67,11 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
                 print('Selected city1: $result');
                 if (result != null && mounted) {
                   setState(() {
-                    // 更新选中的城市标题
-                    print('Selected city: $result');
-                    _selectedCityTitle =
-                        '${(result['province'] ?? '').toString().substring(0, min(3, (result['province'] ?? '').toString().length))}'
-                            .trim();
+                    final province = (result['province'] ?? '').toString();
+                    _selectedCityTitle = province.substring(0, min(3, province.length)).trim();
                   });
+                  final prefs = await SharedPreferences.getInstance();
+                  await prefs.setString('selectedCityTitle', _selectedCityTitle);
                 }
               },
             ),

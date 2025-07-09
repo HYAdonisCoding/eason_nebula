@@ -1,13 +1,17 @@
+import 'package:eason_nebula/ui/AboutPage.dart';
+import 'package:eason_nebula/utils/EasonGlobal.dart';
+
 import '/ui/HomePage.dart';
 import 'package:flutter/material.dart';
 
 import 'ui/LoginPage.dart';
 import 'ui/PersonalInfoInput.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart'; 
+import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:webview_flutter_android/webview_flutter_android.dart';
+
 
 
 void main() {
@@ -23,10 +27,15 @@ void main() {
   runApp(
     MaterialApp(
       home: HomePage(),
+      title: 'Eason Nebula',
+      theme: ThemeData(primarySwatch: Colors.blue),
+      initialRoute: '/',
+      navigatorKey: navigatorKey,
       // 注册路由
       routes: {
         '/login': (context) => LoginPage(),
         '/personalInfoInput': (context) => PersonalInfoInputPage(),
+        '/aboutPage': (context) => AboutPage(),
       },
     ),
   ); // This is the entry point of the application.
