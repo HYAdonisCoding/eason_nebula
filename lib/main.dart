@@ -1,4 +1,6 @@
 import 'package:eason_nebula/ui/AboutPage.dart';
+import 'package:eason_nebula/ui/CarPage.dart';
+import 'package:eason_nebula/ui/SimpleTablePage.dart';
 import 'package:eason_nebula/utils/EasonGlobal.dart';
 
 import '/ui/HomePage.dart';
@@ -11,8 +13,6 @@ import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:webview_flutter_android/webview_flutter_android.dart';
-
-
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +36,8 @@ void main() {
         '/login': (context) => LoginPage(),
         '/personalInfoInput': (context) => PersonalInfoInputPage(),
         '/aboutPage': (context) => AboutPage(),
+        '/CarPage': (context) => CarPage(),
+        '/SimpleTablePage': (context) => SimpleTablePage(),
       },
     ),
   ); // This is the entry point of the application.

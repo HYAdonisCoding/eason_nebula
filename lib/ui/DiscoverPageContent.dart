@@ -60,6 +60,7 @@ class _DiscoverPageContentState extends State<DiscoverPageContent> {
         ),
         SizedBox(height: 12),
         GridView.count(
+          padding: EdgeInsets.zero,
           crossAxisCount: 2,
           shrinkWrap: true,
           physics: NeverScrollableScrollPhysics(),
@@ -72,6 +73,32 @@ class _DiscoverPageContentState extends State<DiscoverPageContent> {
     );
   }
 
+  // 热门话题数据
+  List<Map<String, Object>> hotTopics = [
+    {
+      "title": "汽车",
+      "icon": Icons.local_fire_department,
+      "color": Colors.redAccent,
+      "jump": "CarPage",
+    },
+    {
+      "title": "旅游",
+      "icon": Icons.star,
+      "color": Colors.blueAccent,
+      "jump": "TravelPage",
+    },
+    {"title": "话题三", "icon": Icons.thumb_up, "color": Colors.greenAccent},
+    {"title": "话题四", "icon": Icons.favorite, "color": Colors.pinkAccent},
+    {"title": "话题五", "icon": Icons.share, "color": Colors.orangeAccent},
+    {
+      "title": "饭费",
+      "icon": Icons.comment,
+      "color": Colors.purpleAccent,
+      "jump": "SimpleTablePage",
+    },
+  ];
+
+  /// 解析内容中的表情符号
   @override
   Widget build(BuildContext context) {
     final menuItems = [
@@ -121,22 +148,7 @@ class _DiscoverPageContentState extends State<DiscoverPageContent> {
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 12),
-                Wrap(
-                  spacing: 12,
-                  runSpacing: 12,
-                  children: List.generate(
-                    6,
-                    (i) => Chip(
-                      label: Text('话题 ${i + 1}'),
-                      backgroundColor: Colors.purpleAccent.withOpacity(0.1),
-                      avatar: Icon(
-                        Icons.local_fire_department,
-                        color: Colors.purpleAccent,
-                        size: 18,
-                      ),
-                    ),
-                  ),
-                ),
+                _HotTopicGridSection(hotTopics: hotTopics),
                 SizedBox(height: 32),
                 _buildRecommendationSection(),
               ],
@@ -269,6 +281,92 @@ class DiscoverGridItemCard extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _HotTopicGridSection extends StatelessWidget {
+  final List<Map<String, Object>> hotTopics;
+
+  const _HotTopicGridSection({required this.hotTopics});
+
+  double _calculateGridHeight(
+    int itemCount,
+    int crossAxisCount,
+    double itemHeight,
+    double mainAxisSpacing,
+  ) {
+    final rowCount = (itemCount / crossAxisCount).ceil();
+    return rowCount * itemHeight + (rowCount - 1) * mainAxisSpacing;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+    final double horizontalPadding = 48; // 24*2
+    final double gridSpacing = 24; // 12*2
+    final int crossAxisCount = 3;
+
+    final double itemWidth =
+        (screenWidth - horizontalPadding - gridSpacing) / crossAxisCount;
+    final double itemHeight = itemWidth / 3.4;
+    final double mainAxisSpacing = 8;
+    return Container(
+      color: Colors.greenAccent.withOpacity(0.1),
+      height: _calculateGridHeight(
+        hotTopics.length,
+        crossAxisCount,
+        itemHeight,
+        mainAxisSpacing,
+      ),
+      child: GridView.count(
+        padding: EdgeInsets.zero,
+        crossAxisCount: 3,
+        shrinkWrap: true,
+        physics: NeverScrollableScrollPhysics(),
+        crossAxisSpacing: 12,
+        mainAxisSpacing: 8,
+        childAspectRatio: 3.4,
+        children: hotTopics.map((topic) {
+          return InkWell(
+            onTap: () {
+              final jumpRoute = topic['jump'] as String?;
+              if (jumpRoute != null && jumpRoute.isNotEmpty) {
+                Navigator.pushNamed(context, '/$jumpRoute');
+              }
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: (topic['color'] as Color).withOpacity(0.08),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 6),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    topic['icon'] as IconData,
+                    color: topic['color'] as Color,
+                    size: 16,
+                  ),
+                  SizedBox(width: 4),
+                  Flexible(
+                    child: Text(
+                      topic['title'] as String,
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: topic['color'] as Color,
+                        fontWeight: FontWeight.w500,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
       ),
     );
   }

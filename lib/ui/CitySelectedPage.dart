@@ -1,4 +1,5 @@
 import 'package:eason_nebula/utils/EasonMessenger.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:lpinyin/lpinyin.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -191,19 +192,147 @@ class _CitySelectedPageState extends State<_CitySelectedPageBody> {
                       print(
                         'Selected path: $matchedProvince - $matchedCity - $matchedDistrict',
                       );
+                      // showAboutDialog(
+                      //   context: context,
+                      //   applicationName: '选择结果',
+                      //   children: [
+                      //     Text(
+                      //       '你选择了 $matchedProvince - $matchedCity - $matchedDistrict',
+                      //     ),
+                      //   ],
+                      // );
 
-                      EasonMessenger.showSuccess(
-                        context,
-                        message:
-                            '你选择了 $matchedProvince - $matchedCity - $matchedDistrict',
-                        onComplete: () {
-                          Navigator.pop(parentContext, {
-                            'province': matchedProvince,
-                            'city': matchedCity,
-                            'district': matchedDistrict,
-                          });
+                      // 使用showGeneralDialog方式显示选择结果
+
+                      // showGeneralDialog(
+                      //   context: context,
+                      //   barrierDismissible: true,
+                      //   barrierLabel: MaterialLocalizations.of(
+                      //     context,
+                      //   ).modalBarrierDismissLabel,
+                      //   transitionDuration: Duration(milliseconds: 200),
+                      //   pageBuilder:
+                      //       (
+                      //         BuildContext context,
+                      //         Animation<double> animation,
+                      //         Animation<double> secondaryAnimation,
+                      //       ) {
+                      //         return Center(
+                      //           child: Material(
+                      //             borderRadius: BorderRadius.circular(8),
+                      //             child: Container(
+                      //               width: 280,
+                      //               padding: const EdgeInsets.all(20),
+                      //               decoration: BoxDecoration(
+                      //                 color: Colors.white,
+                      //                 borderRadius: BorderRadius.circular(8),
+                      //               ),
+                      //               child: Column(
+                      //                 mainAxisSize: MainAxisSize.min,
+                      //                 children: [
+                      //                   Text(
+                      //                     '选择结果',
+                      //                     style: TextStyle(
+                      //                       fontSize: 18,
+                      //                       fontWeight: FontWeight.bold,
+                      //                     ),
+                      //                   ),
+                      //                   SizedBox(height: 10),
+                      //                   Text(
+                      //                     '你选择了 $matchedProvince - $matchedCity - $matchedDistrict',
+                      //                   ),
+                      //                   SizedBox(height: 20),
+                      //                   ElevatedButton(
+                      //                     onPressed: () {
+                      //                       Navigator.of(
+                      //                         context,
+                      //                       ).pop(); // 关闭对话框
+                      //                       Navigator.pop(parentContext, {
+                      //                         'province': matchedProvince,
+                      //                         'city': matchedCity,
+                      //                         'district': matchedDistrict,
+                      //                       });
+                      //                     },
+                      //                     child: Text('确定'),
+                      //                   ),
+                      //                 ],
+                      //               ),
+                      //             ),
+                      //           ),
+                      //         );
+                      //       },
+                      // );
+
+                      // 使用showCupertinoDialog显示选择结果
+                      showCupertinoDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return CupertinoAlertDialog(
+                            title: Text('选择结果'),
+                            content: Text(
+                              '你选择了 $matchedProvince - $matchedCity - $matchedDistrict',
+                            ),
+                            actions: [
+                              CupertinoDialogAction(
+                                child: Text('确定'),
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // 关闭对话框
+                                  Navigator.pop(parentContext, {
+                                    'province': matchedProvince,
+                                    'city': matchedCity,
+                                    'district': matchedDistrict,
+                                  });
+                                },
+                              ),
+                              CupertinoDialogAction(
+                                child: Text('取消'),
+                                onPressed: () {
+                                  Navigator.of(context).pop(); // 关闭对话框
+                                },
+                              ),
+                            ],
+                          );
                         },
                       );
+
+                      // 使用showDialog方式显示选择结果
+
+                      // showDialog(
+                      //   context: context,
+                      //   builder: (BuildContext context) {
+                      //     return AlertDialog(
+                      //       title: Text('选择结果'),
+                      //       content: Text(
+                      //         '你选择了 $matchedProvince - $matchedCity - $matchedDistrict',
+                      //       ),
+                      //       actions: [
+                      //         TextButton(
+                      //           onPressed: () {
+                      //             Navigator.of(context).pop(); // 关闭 dialog
+                      //             Navigator.pop(parentContext, {
+                      //               'province': matchedProvince,
+                      //               'city': matchedCity,
+                      //               'district': matchedDistrict,
+                      //             });
+                      //           },
+                      //           child: Text('确定'),
+                      //         ),
+                      //       ],
+                      //     );
+                      //   },
+                      // );
+                      // EasonMessenger.showSuccess(
+                      //   context,
+                      //   message:
+                      //       '你选择了 $matchedProvince - $matchedCity - $matchedDistrict',
+                      //   onComplete: () {
+                      //     Navigator.pop(parentContext, {
+                      //       'province': matchedProvince,
+                      //       'city': matchedCity,
+                      //       'district': matchedDistrict,
+                      //     });
+                      //   },
+                      // );
                     },
                   );
                 }).toList(),
