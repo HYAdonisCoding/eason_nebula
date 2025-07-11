@@ -6,6 +6,7 @@ class DataTablePage extends EasonBasePage {
 
   @override
   String get title => 'DataTable';
+
   final List<List<String>> data = [
     ['曹伟席', '18', '324'],
     ['陈紫凝', '17', '306'],
@@ -42,6 +43,7 @@ class DataTablePage extends EasonBasePage {
     ['赵子都', '18', '324'],
     ['郑清瑶', '18', '324'],
   ];
+
   @override
   Widget buildContent(BuildContext context) {
     return Container(
@@ -62,11 +64,11 @@ class DataTablePage extends EasonBasePage {
             final row = entry.value;
             final bool isOdd = index % 2 == 1;
             return DataRow(
-              color: MaterialStateProperty.resolveWith<Color?>((
-                Set<MaterialState> states,
-              ) {
-                return isOdd ? Colors.grey.shade50 : Colors.white;
-              }),
+              color: MaterialStateProperty.resolveWith<Color?>(
+                (Set<MaterialState> states) {
+                  return isOdd ? Colors.grey.shade50 : Colors.white;
+                },
+              ),
               cells: row.map((cell) {
                 return DataCell(
                   Text(
@@ -81,5 +83,15 @@ class DataTablePage extends EasonBasePage {
         ),
       ),
     );
+  }
+
+  @override
+  State<DataTablePage> createState() => _DataTablePageState();
+}
+
+class _DataTablePageState extends BasePageState<DataTablePage> {
+  @override
+  Widget buildContent(BuildContext context) {
+    return widget.buildContent(context);
   }
 }

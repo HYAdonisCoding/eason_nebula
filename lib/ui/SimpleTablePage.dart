@@ -3,11 +3,16 @@ import 'package:eason_nebula/ui/TableHeaderCell.dart';
 import 'package:flutter/material.dart';
 
 class SimpleTablePage extends EasonBasePage {
-  SimpleTablePage({Key? key}) : super(key: key);
+  SimpleTablePage({super.key});
 
   @override
   String get title => '信息';
 
+  @override
+  State<SimpleTablePage> createState() => _SimpleTablePageState();
+}
+
+class _SimpleTablePageState extends BasePageState<SimpleTablePage> {
   final List<List<String>> data = [
     ['曹伟席', '18', '324'],
     ['陈紫凝', '17', '306'],
@@ -48,11 +53,8 @@ class SimpleTablePage extends EasonBasePage {
   @override
   Widget buildContent(BuildContext context) {
     final double space = 10;
-    // 计算屏幕宽度，用来撑满宽度
     final screenWidth = MediaQuery.of(context).size.width;
-    // 列数
     final columnCount = 3;
-    // 每列宽度，自动分配（保证宽度不小于某个值）
     final double minColumnWidth = 80;
     final double columnWidth = (screenWidth - space * 2) / columnCount;
     final double fixedColumnWidth = columnWidth < minColumnWidth
@@ -71,7 +73,6 @@ class SimpleTablePage extends EasonBasePage {
             border: TableBorder.all(color: Colors.grey.shade300),
             defaultColumnWidth: FixedColumnWidth(fixedColumnWidth),
             children: [
-              // 表头
               TableRow(
                 decoration: BoxDecoration(color: Colors.blueGrey.shade100),
                 children: const [
@@ -80,7 +81,6 @@ class SimpleTablePage extends EasonBasePage {
                   TableHeaderCell(text: '餐费'),
                 ],
               ),
-              // 数据行
               ...data.asMap().entries.map((entry) {
                 final index = entry.key;
                 final row = entry.value;
@@ -115,5 +115,3 @@ class SimpleTablePage extends EasonBasePage {
     );
   }
 }
-
-

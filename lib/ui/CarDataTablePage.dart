@@ -9,31 +9,18 @@ class CarDataTablePage extends EasonBasePage {
   String get title => '车辆数据';
 
   @override
-  /*************  ✨ Windsurf Command ⭐  *************/
-  /// Builds the content for the CarPage.
-  ///
-  /// This method returns a [_CarPageBody] widget, which is responsible for
-  /// displaying the main content of the CarPage.
-  ///
-  /// The [context] parameter provides information about the location in the
-  /// widget tree in which this widget is being built.
-  /*******  1f04a993-d97e-4ff3-bdc6-ca6984211e19  *******/
-  Widget buildContent(BuildContext context) {
-    return _CarPageBody();
-  }
+  State<CarDataTablePage> createState() => _CarDataTablePageState();
 }
 
-class _CarPageBody extends StatefulWidget {
-  @override
-  State<_CarPageBody> createState() => _CarPageBodyState();
-}
-
-class _CarPageBodyState extends State<_CarPageBody> {
+class _CarDataTablePageState extends BasePageState<CarDataTablePage> {
   List<dynamic> titles = [];
   List<dynamic> _carValues = [];
   List<String> keyParams = [];
   List<String> carNames = [];
   List<List<String>> carsData = [];
+  bool isLoading = true;
+  bool hasError = false;
+
   @override
   void initState() {
     super.initState();
@@ -41,99 +28,144 @@ class _CarPageBodyState extends State<_CarPageBody> {
   }
 
   Future<void> _loadCars() async {
-    final result = await CarDataService.loadCarData();
-    final titlesData = result['titlelist'] as List<dynamic>;
-    final carValuesData = result['datalist'] as List<dynamic>;
+    try {
+      final result = await CarDataService.loadCarData();
+      final titlesData = result['titlelist'] as List<dynamic>;
+      final carValuesData = result['datalist'] as List<dynamic>;
 
-    final keyParams = await CarDataService.extractKeyParams(titlesData);
-    final carNames = CarDataService.extractCarNames(carValuesData);
-    final carsData = CarDataService.buildCarsData(keyParams, carValuesData);
+      final keyParams = await CarDataService.extractKeyParams(titlesData);
+      final carNames = CarDataService.extractCarNames(carValuesData);
+      final carsData = CarDataService.buildCarsData(keyParams, carValuesData);
 
-    setState(() {
-      titles = titlesData;
-      _carValues = carValuesData;
-      this.keyParams = keyParams;
-      this.carNames = carNames;
-      this.carsData = carsData;
-    });
+      setState(() {
+        titles = titlesData;
+        _carValues = carValuesData;
+        this.keyParams = keyParams;
+        this.carNames = carNames;
+        this.carsData = carsData;
+        isLoading = false;
+        hasError = false;
+      });
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+        hasError = true;
+      });
+    }
   }
 
   @override
+  Widget buildContent(BuildContext context) {
+    return _CarPageBody(
+      keyParams: keyParams,
+      carNames: carNames,
+      carsData: carsData,
+      isLoading: isLoading,
+      hasError: hasError,
+    );
+  }
+}
+
+class _CarPageBody extends StatelessWidget {
+  final List<String> keyParams;
+  final List<String> carNames;
+  final List<List<String>> carsData;
+  final bool isLoading;
+  final bool hasError;
+
+  const _CarPageBody({
+    Key? key,
+    required this.keyParams,
+    required this.carNames,
+    required this.carsData,
+    required this.isLoading,
+    required this.hasError,
+  }) : super(key: key);
+
+  @override
   Widget build(BuildContext context) {
-    if (titles.isEmpty || _carValues.isEmpty) {
+    if (hasError) {
+      return Center(child: Text('加载数据失败，请重试'));
+    }
+    if (isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
 
-    // 4. 渲染表格
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: SizedBox(
-        width: (carNames.length + 1) * 120,
-        child: ListView.builder(
-          itemCount: keyParams.length + 1,
-          itemBuilder: (context, rowIndex) {
-            if (rowIndex == 0) {
-              // 表头
-              return Table(
-                border: TableBorder.all(color: Colors.grey),
-                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                columnWidths: {0: FixedColumnWidth(120)},
-                children: [
-                  TableRow(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        color: Colors.grey.shade200,
-                        child: const Text(
-                          '参数项',
-                          style: TextStyle(fontWeight: FontWeight.bold),
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final totalWidth = constraints.maxWidth;
+        final paramColumnWidth = 60.0;
+        final rawWidth =
+            (totalWidth - paramColumnWidth) /
+            (carNames.isNotEmpty ? carNames.length : 1);
+        final otherColumnWidth = rawWidth < 100 ? 100.0 : rawWidth.toDouble();
+
+        return SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minWidth: totalWidth),
+              child: DataTable(
+                columnSpacing: 12,
+                columns: [
+                  DataColumn(
+                    label: SizedBox(
+                      width: paramColumnWidth,
+                      child: const Text(
+                        '参数项',
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  for (var carName in carNames)
+                    DataColumn(
+                      label: SizedBox(
+                        width: otherColumnWidth,
+                        child: Text(
+                          carName,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
-                      for (var carName in carNames)
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          color: Colors.grey.shade200,
-                          child: Text(
-                            carName,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                ],
+                rows: [
+                  for (
+                    var rowIndex = 0;
+                    rowIndex < keyParams.length;
+                    rowIndex++
+                  )
+                    DataRow(
+                      cells: [
+                        DataCell(
+                          SizedBox(
+                            width: paramColumnWidth,
+                            child: Text(keyParams[rowIndex], softWrap: true),
                           ),
                         ),
-                    ],
-                  ),
+                        for (
+                          var carIndex = 0;
+                          carIndex < carNames.length;
+                          carIndex++
+                        )
+                          DataCell(
+                            SizedBox(
+                              width: otherColumnWidth,
+                              child: Text(
+                                carsData[rowIndex][carIndex],
+                                softWrap: true,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
                 ],
-              );
-            } else {
-              final paramName = keyParams[rowIndex - 1];
-              return Table(
-                border: TableBorder.all(color: Colors.grey),
-                defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-                columnWidths: {0: FixedColumnWidth(120)},
-                children: [
-                  TableRow(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(8),
-                        child: Text(paramName),
-                      ),
-                      for (
-                        var carIndex = 0;
-                        carIndex < carNames.length;
-                        carIndex++
-                      )
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          child: Text(carsData[rowIndex - 1][carIndex]),
-                        ),
-                    ],
-                  ),
-                ],
-              );
-            }
-          },
-        ),
-      ),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
-
-  // _buildHeaderRow 和 _buildGroupedRows 方法已弃用，不再使用 Table 渲染
 }

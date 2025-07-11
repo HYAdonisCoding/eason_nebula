@@ -9,7 +9,7 @@ class CommentPage extends EasonBasePage {
   final Map<String, dynamic> item;
   CommentPage({Key? key, required this.item}) : super(key: key);
 
-  late final _CommentPageBodyState? _bodyState;
+  _CommentPageState? _state;
 
   @override
   String get title => item['note_card']['display_title'] ?? '评论';
@@ -20,30 +20,20 @@ class CommentPage extends EasonBasePage {
       title: '刷新',
       icon: Icons.refresh,
       iconColor: Colors.blueAccent,
-      onTap: () => _bodyState?.fetchComments(),
+      onTap: () => _state?.fetchComments(),
     ),
   ];
 
   @override
+  State<CommentPage> createState() => _CommentPageState();
+
+  @override
   Widget buildContent(BuildContext context) {
-    return _CommentPageBody(
-      item: item,
-      onInitState: (state) => _bodyState = state,
-    );
+    return _CommentPageBody(item: item);
   }
 }
 
-class _CommentPageBody extends StatefulWidget {
-  final Map<String, dynamic> item;
-  final void Function(_CommentPageBodyState)? onInitState;
-  const _CommentPageBody({Key? key, required this.item, this.onInitState})
-    : super(key: key);
-
-  @override
-  State<_CommentPageBody> createState() => _CommentPageBodyState();
-}
-
-class _CommentPageBodyState extends State<_CommentPageBody> {
+class _CommentPageState extends BasePageState<CommentPage> {
   List<dynamic> _comments = [];
   bool _isLoading = false;
 
@@ -94,7 +84,6 @@ class _CommentPageBodyState extends State<_CommentPageBody> {
   @override
   void initState() {
     super.initState();
-    widget.onInitState?.call(this);
     _emojiMapFuture = EasonEmoji.loadEmojiMap();
     fetchComments();
   }
@@ -149,7 +138,7 @@ class _CommentPageBodyState extends State<_CommentPageBody> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return RefreshIndicator(
       onRefresh: fetchComments,
       child: _isLoading
@@ -246,5 +235,17 @@ class _CommentPageBodyState extends State<_CommentPageBody> {
               },
             ),
     );
+  }
+}
+
+class _CommentPageBody extends StatelessWidget {
+  final Map<String, dynamic> item;
+  const _CommentPageBody({Key? key, required this.item}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    // 纯展示控件，由 _CommentPageState 负责状态管理和构建内容
+    // 这里可以返回一个空容器或简单的占位符
+    return Container();
   }
 }

@@ -14,13 +14,14 @@ abstract class EasonBasePage extends StatefulWidget {
   /// 子类如需展示返回按钮或其他按钮，可重写此方法。
   List<EasonMenuItem>? leadingMenuItems(BuildContext context) => null;
 
-  @override
-  State<EasonBasePage> createState() => _EasonBasePageState();
-
-  Widget buildContent(BuildContext context);
+  /// 构建页面内容的 Widget。
+  /// 子类必须实现此方法以提供页面的主体内容。
+  ///
+  /// [context] 是当前的 BuildContext，用于构建页面内容。
+  /// 返回一个 Widget，通常是一个包含页面主体内容的 Container、Column 或其他布局组件。
 }
 
-class _EasonBasePageState extends State<EasonBasePage> {
+abstract class BasePageState<T extends EasonBasePage> extends State<T> {
   @override
   void initState() {
     super.initState();
@@ -34,7 +35,7 @@ class _EasonBasePageState extends State<EasonBasePage> {
   }
 
   @override
-  void didUpdateWidget(covariant EasonBasePage oldWidget) {
+  void didUpdateWidget(covariant T oldWidget) {
     super.didUpdateWidget(oldWidget);
     debugPrint('【生命周期】${widget.runtimeType} 页面 didUpdateWidget');
   }
@@ -81,7 +82,9 @@ class _EasonBasePageState extends State<EasonBasePage> {
           Navigator.of(context).pop();
         },
       ),
-      body: widget.buildContent(context),
+      body: buildContent(context),
     );
   }
+
+  Widget buildContent(BuildContext context); // ← 子类必须实现
 }

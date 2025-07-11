@@ -2,11 +2,16 @@ import 'package:eason_nebula/ui/Base/EasonBasePage.dart';
 import 'package:flutter/material.dart';
 
 class AboutPage extends EasonBasePage {
-  const AboutPage({Key? key}) : super(key: key);
+  const AboutPage({super.key});
 
   @override
   String get title => '关于我们';
 
+  @override
+  State<AboutPage> createState() => _AboutPageState();
+}
+
+class _AboutPageState extends BasePageState<AboutPage> {
   @override
   Widget buildContent(BuildContext context) {
     return SingleChildScrollView(

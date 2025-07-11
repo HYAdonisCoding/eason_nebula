@@ -1,4 +1,5 @@
 import 'package:eason_nebula/ui/DetailNotePage.dart';
+import 'package:eason_nebula/ui/TemplePage.dart';
 import 'package:eason_nebula/utils/EasonAppBar.dart';
 import 'package:extended_image/extended_image.dart';
 
@@ -358,6 +359,12 @@ class _HotTopicGridSection extends StatelessWidget {
               final jumpRoute = topic['jump'] as String?;
               if (jumpRoute != null && jumpRoute.isNotEmpty) {
                 Navigator.pushNamed(context, '/$jumpRoute');
+              } else {
+                // 如果没有指定跳转路由，跳转到TemplePage
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => TemplePage()),
+                );
               }
             },
             child: Container(
