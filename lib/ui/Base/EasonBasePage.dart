@@ -14,6 +14,9 @@ abstract class EasonBasePage extends StatefulWidget {
   /// 子类如需展示返回按钮或其他按钮，可重写此方法。
   List<EasonMenuItem>? leadingMenuItems(BuildContext context) => null;
 
+  /// 可选：展示左侧返回按钮，默认返回 null。
+  bool get showBack => true;
+
   /// 构建页面内容的 Widget。
   /// 子类必须实现此方法以提供页面的主体内容。
   ///
@@ -81,6 +84,7 @@ abstract class BasePageState<T extends EasonBasePage> extends State<T> {
         onBack: () {
           Navigator.of(context).pop();
         },
+        showBack: widget.showBack ?? true,
       ),
       body: buildContent(context),
     );

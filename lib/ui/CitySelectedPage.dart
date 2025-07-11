@@ -16,22 +16,10 @@ class CitySelectedPage extends EasonBasePage {
   String get title => '选择';
 
   @override
-  Widget buildContent(BuildContext context) {
-    return _CitySelectedPageBody(); // 把页面内容放入 StateLess/Stateful 子组件中更清晰
-  }
-
-  @override
-  State<StatefulWidget> createState() => _CitySelectedPageBodyState();
+  State<CitySelectedPage> createState() => _CitySelectedPageState();
 }
 
-// 页面主体作为 StatefulWidget 抽出来
-class _CitySelectedPageBody extends StatefulWidget {
-  @override
-  State<_CitySelectedPageBody> createState() => _CitySelectedPageBodyState();
-}
-
-// 城市选择页面的状态
-class _CitySelectedPageBodyState extends State<_CitySelectedPageBody> {
+class _CitySelectedPageState extends BasePageState<CitySelectedPage> {
   final ScrollController _scrollController = ScrollController();
   String? _expandedProvince;
 
@@ -119,7 +107,7 @@ class _CitySelectedPageBodyState extends State<_CitySelectedPageBody> {
               children: List.generate(items.length, (index) {
                 final province = items[index];
                 final cities = province['children'] ?? [];
-                final provinceValue = province['code'] ?? province['name'];
+                final provinceValue = '${province['code'] ?? province['name']}';
                 return ExpansionPanelRadio(
                   value: provinceValue,
                   headerBuilder: (context, isExpanded) =>
@@ -147,13 +135,6 @@ class _CitySelectedPageBodyState extends State<_CitySelectedPageBody> {
                   ),
                 );
               }),
-              expansionCallback: (panelIndex, isExpanded) {
-                setState(() {
-                  final province = items[panelIndex];
-                  final provinceValue = province['code'] ?? province['name'];
-                  _expandedProvince = isExpanded ? null : provinceValue;
-                });
-              },
             ),
           ],
         );
@@ -245,7 +226,7 @@ class _CitySelectedPageBodyState extends State<_CitySelectedPageBody> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     return FutureBuilder<List<Map<String, dynamic>>>(
       future: loadCityData(),
       builder: (context, snapshot) {

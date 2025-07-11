@@ -1,3 +1,4 @@
+import 'package:eason_nebula/ui/Base/EasonBasePage.dart';
 import 'package:eason_nebula/ui/DetailNotePage.dart';
 import 'package:eason_nebula/ui/TemplePage.dart';
 import 'package:eason_nebula/utils/EasonAppBar.dart';
@@ -8,12 +9,41 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'dart:convert';
 
-class DiscoverPageContent extends StatefulWidget {
+class DiscoverPageContent extends EasonBasePage {
+  const DiscoverPageContent({Key? key}) : super(key: key);
+
   @override
-  _DiscoverPageContentState createState() => _DiscoverPageContentState();
+  String get title => '发现';
+
+  @override
+  List<EasonMenuItem> menuItems(BuildContext context) => [
+    EasonMenuItem(
+      title: '热门',
+      icon: Icons.local_fire_department,
+      iconColor: Colors.orange,
+      onTap: () => print('热门'),
+    ),
+    EasonMenuItem(
+      title: '刷新',
+      icon: Icons.refresh_sharp,
+      iconColor: Colors.orange,
+      onTap: () => _loadRedNote(),
+    ),
+  ];
+
+  @override
+  // TODO: implement showBack
+  bool get showBack => false;
+
+  @override
+  State<DiscoverPageContent> createState() => _DiscoverPageContentState();
+
+  Future<void> _loadRedNote() async {
+    // This will be overridden in state, but we need this here to satisfy the menuItems callback.
+  }
 }
 
-class _DiscoverPageContentState extends State<DiscoverPageContent> {
+class _DiscoverPageContentState extends BasePageState<DiscoverPageContent> {
   List<dynamic> _hotList = [];
 
   @override
@@ -51,31 +81,8 @@ class _DiscoverPageContentState extends State<DiscoverPageContent> {
     }
   }
 
-  Widget _buildRecommendationSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          '为你推荐',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 12),
-        GridView.count(
-          padding: EdgeInsets.zero,
-          crossAxisCount: 2,
-          shrinkWrap: true,
-          physics: NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
-          childAspectRatio: 0.68,
-          children: _hotList.map((item) => DiscoverGridItemCard(item)).toList(),
-        ),
-      ],
-    );
-  }
-
   // 热门话题数据
-  List<Map<String, Object>> hotTopics = [
+  final List<Map<String, Object>> hotTopics = [
     {
       "title": "汽车",
       "icon": Icons.local_fire_department,
@@ -94,7 +101,6 @@ class _DiscoverPageContentState extends State<DiscoverPageContent> {
       "color": Colors.blueAccent,
       "jump": "TravelPage",
     },
-
     {
       "title": "Paginated",
       "icon": Icons.share,
@@ -123,62 +129,58 @@ class _DiscoverPageContentState extends State<DiscoverPageContent> {
     {"title": "话题四", "icon": Icons.favorite, "color": Colors.pinkAccent},
   ];
 
-  /// 解析内容中的表情符号
-  @override
-  Widget build(BuildContext context) {
-    final menuItems = [
-      EasonMenuItem(
-        title: '热门',
-        icon: Icons.local_fire_department,
-        iconColor: Colors.orange,
-        onTap: () => print('热门'),
-      ),
-      EasonMenuItem(
-        title: '刷新',
-        icon: Icons.refresh_sharp,
-        iconColor: Colors.orange,
-        onTap: () => _loadRedNote,
-      ),
-    ];
+  Widget _buildRecommendationSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '为你推荐',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 12),
+        GridView.count(
+          padding: EdgeInsets.zero,
+          crossAxisCount: 2,
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          mainAxisSpacing: 12,
+          crossAxisSpacing: 12,
+          childAspectRatio: 0.68,
+          children: _hotList.map((item) => DiscoverGridItemCard(item)).toList(),
+        ),
+      ],
+    );
+  }
 
+  @override
+  Widget buildContent(BuildContext context) {
     return RefreshIndicator(
       onRefresh: _loadRedNote,
-      child: Column(
+      child: ListView(
+        padding: EdgeInsets.all(24),
         children: [
-          EasonAppBar(title: '发现', menuItems: menuItems, showBack: false),
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.all(24),
-              children: [
-                Card(
-                  elevation: 3,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.search,
-                      color: Colors.deepPurple,
-                      size: 32,
-                    ),
-                    title: Text('全网热搜'),
-                    subtitle: Text('看看大家都在关注什么'),
-                    trailing: Icon(Icons.arrow_forward_ios, size: 18),
-                    onTap: () {},
-                  ),
-                ),
-                SizedBox(height: 24),
-                Text(
-                  '热门话题',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 12),
-                _HotTopicGridSection(hotTopics: hotTopics),
-                SizedBox(height: 32),
-                _buildRecommendationSection(),
-              ],
+          Card(
+            elevation: 3,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(16),
+            ),
+            child: ListTile(
+              leading: Icon(Icons.search, color: Colors.deepPurple, size: 32),
+              title: Text('全网热搜'),
+              subtitle: Text('看看大家都在关注什么'),
+              trailing: Icon(Icons.arrow_forward_ios, size: 18),
+              onTap: () {},
             ),
           ),
+          SizedBox(height: 24),
+          Text(
+            '热门话题',
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+          SizedBox(height: 12),
+          _HotTopicGridSection(hotTopics: hotTopics),
+          SizedBox(height: 32),
+          _buildRecommendationSection(),
         ],
       ),
     );

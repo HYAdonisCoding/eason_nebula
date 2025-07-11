@@ -68,10 +68,15 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
                 if (result != null && mounted) {
                   setState(() {
                     final province = (result['province'] ?? '').toString();
-                    _selectedCityTitle = province.substring(0, min(3, province.length)).trim();
+                    _selectedCityTitle = province
+                        .substring(0, min(3, province.length))
+                        .trim();
                   });
                   final prefs = await SharedPreferences.getInstance();
-                  await prefs.setString('selectedCityTitle', _selectedCityTitle);
+                  await prefs.setString(
+                    'selectedCityTitle',
+                    _selectedCityTitle,
+                  );
                 }
               },
             ),

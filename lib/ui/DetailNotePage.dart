@@ -29,12 +29,14 @@ class DetailNotePage extends EasonBasePage {
   ];
 
   @override
-  Widget buildContent(BuildContext context) {
-    return _DetailNoteContent(item: item);
-  }
-  
+  State<DetailNotePage> createState() => _DetailNotePageState();
+}
+
+class _DetailNotePageState extends BasePageState<DetailNotePage> {
   @override
-  State<StatefulWidget> createState() => _DetailNoteContentState();
+  Widget buildContent(BuildContext context) {
+    return _DetailNoteContent(item: widget.item);
+  }
 }
 
 class _DetailNoteContent extends StatefulWidget {
