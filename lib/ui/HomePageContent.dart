@@ -1,3 +1,4 @@
+import 'package:eason_nebula/ui/HotPhonePage.dart';
 import 'package:eason_nebula/utils/EasonAppBar.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -32,10 +33,9 @@ class _HomePageContentState extends State<HomePageContent> {
       );
       setState(() {
         _hotList = list;
-        print(list.length);
       });
     } catch (e) {
-      print('加载热搜失败: $e');
+      debugPrint('加载热搜失败: $e');
       setState(() {
         _hotList = [];
       });
@@ -44,87 +44,172 @@ class _HomePageContentState extends State<HomePageContent> {
 
   @override
   Widget build(BuildContext context) {
+    // 顶部菜单项
     final menuItems = [
       EasonMenuItem(
         title: '扫一扫',
         icon: Icons.qr_code_scanner,
         iconColor: Colors.deepPurple,
-        onTap: () => print('扫一扫'),
+        onTap: () => debugPrint('扫一扫'),
       ),
     ];
 
     return Column(
       children: [
-        EasonAppBar(title: '首页', menuItems: menuItems, showBack: false,),
+        // 自定义导航栏
+        EasonAppBar(title: '首页', menuItems: menuItems, showBack: false),
         Expanded(
           child: ListView(
             padding: EdgeInsets.all(24),
             children: [
-              Text(
-                '欢迎回来！',
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 16),
-              Card(
-                elevation: 4,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: Colors.blueAccent,
-                    child: Icon(Icons.person, color: Colors.white),
-                  ),
-                  title: Text('你好，Eason'),
-                  subtitle: Text('今天也要元气满满哦！'),
-                  trailing: Icon(Icons.arrow_forward_ios, size: 18),
-                  onTap: () {},
-                ),
-              ),
+              _buildWelcomeCard(),
               SizedBox(height: 24),
-              Text(
-                '快捷功能',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 12),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  _QuickAction(icon: Icons.qr_code_scanner, label: '扫一扫'),
-                  _QuickAction(icon: Icons.message, label: '消息'),
-                  _QuickAction(
-                    icon: Icons.settings,
-                    label: '设置',
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (_) => SettingPage()),
-                      );
-                    },
-                  ),
-                  _QuickAction(icon: Icons.star, label: '收藏'),
-                ],
-              ),
+              _buildQuickActions(),
               SizedBox(height: 32),
-              Text(
-                '热搜榜',
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 16),
-              if (_hotList.isEmpty)
-                Center(child: CircularProgressIndicator())
-              else ...[
-                _buildTopCard(_hotList[0]),
-                SizedBox(height: 18),
-                ...List.generate(
-                  _hotList.length > 4 ? 3 : _hotList.length - 1,
-                  (i) => _buildMedalCard(_hotList[i + 1], i + 1),
-                ),
-                ..._hotList.skip(4).map((item) => _buildNormalCard(item)),
-              ],
+              _buildHotSearchSection(),
             ],
           ),
         ),
+      ],
+    );
+  }
+
+  /// 欢迎卡片区域，显示欢迎语和用户信息
+  Widget _buildWelcomeCard() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '欢迎回来！',
+          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 16),
+        Card(
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundColor: Colors.blueAccent,
+              child: Icon(Icons.person, color: Colors.white),
+            ),
+            title: Text('你好，Eason'),
+            subtitle: Text('今天也要元气满满哦！'),
+            trailing: Icon(Icons.arrow_forward_ios, size: 18),
+            onTap: () {},
+          ),
+        ),
+      ],
+    );
+  }
+
+  /// 快捷功能区，包含常用操作入口
+  Widget _buildQuickActions() {
+    // 快捷功能数据
+    final quickActions = [
+      {
+        'icon': Icons.qr_code_scanner,
+        'label': '扫一扫',
+        'onTap': () => debugPrint('扫一扫'),
+      },
+      {'icon': Icons.message, 'label': '消息', 'onTap': () => debugPrint('消息')},
+      {
+        'icon': Icons.settings,
+        'label': '设置',
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => SettingPage()),
+          );
+        },
+      },
+      {
+        'icon': Icons.phone_iphone,
+        'label': '推荐',
+        'onTap': () {
+          debugPrint('推荐');
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => HotPhonePage()),
+          );
+        },
+      },
+      {'icon': Icons.star, 'label': '收藏', 'onTap': () => debugPrint('收藏')},
+      {'icon': Icons.history, 'label': '历史', 'onTap': () => debugPrint('历史')},
+      {'icon': Icons.wallet, 'label': '钱包', 'onTap': () => debugPrint('钱包')},
+      {'icon': Icons.share, 'label': '分享', 'onTap': () => debugPrint('分享')},
+      {'icon': Icons.help, 'label': '帮助', 'onTap': () => debugPrint('帮助')},
+      {'icon': Icons.feedback, 'label': '反馈', 'onTap': () => debugPrint('反馈')},
+      {'icon': Icons.info, 'label': '关于', 'onTap': () => debugPrint('关于')},
+      {'icon': Icons.bookmark, 'label': '书签', 'onTap': () => debugPrint('书签')},
+      {
+        'icon': Icons.notifications,
+        'label': '通知',
+        'onTap': () => debugPrint('通知'),
+      },
+      {'icon': Icons.language, 'label': '语言', 'onTap': () => debugPrint('语言')},
+      {'icon': Icons.palette, 'label': '主题', 'onTap': () => debugPrint('主题')},
+    ];
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '快捷功能',
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 12),
+        Wrap(
+          spacing: 12, // 水平间距
+          runSpacing: 12, // 垂直间距
+          alignment: WrapAlignment.start,
+          children: quickActions.map((action) {
+            return SizedBox(
+              width: (MediaQuery.of(context).size.width - 24 * 2 - 12 * 4) / 5,
+              child: _QuickAction(
+                icon: action['icon'] as IconData,
+                label: action['label'] as String,
+                onTap: action['onTap'] as void Function()?,
+              ),
+            );
+          }).toList(),
+        ),
+      ],
+    );
+  }
+
+  /// 热搜榜区，展示热搜数据
+  Widget _buildHotSearchSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          '热搜榜',
+          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+        ),
+        SizedBox(height: 16),
+        if (_hotList.isEmpty)
+          /*************  ✨ Windsurf Command ⭐  *************/
+          /// Builds the top card widget displaying the most popular hot search item.
+          ///
+          /// The card has a deep purple background with a high elevation to stand out,
+          /// and it includes an icon, title, and heat score of the item.
+          /// Tapping the card will launch a URL associated with the item.
+          ///
+          /// - Parameter item: A dynamic object containing details of the hot search item,
+          ///   with expected fields 'card_title' for the title and 'heat_score' for the heat score.
+          /*******  70e595b2-991d-4e2b-bbf0-8cf8fccb431c  *******/
+          Center(child: CircularProgressIndicator())
+        else ...[
+          _buildTopCard(_hotList[0]),
+          SizedBox(height: 18),
+          ...List.generate(
+            _hotList.length > 4 ? 3 : _hotList.length - 1,
+            (i) => _buildMedalCard(_hotList[i + 1], i + 1),
+          ),
+          ..._hotList.skip(4).map((item) => _buildNormalCard(item)),
+        ],
       ],
     );
   }
@@ -269,11 +354,17 @@ class _QuickAction extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
+      behavior: HitTestBehavior.opaque,
       child: Column(
         children: [
           CircleAvatar(
-            backgroundColor: Colors.blueAccent.withOpacity(0.15),
-            child: Icon(icon, color: Colors.blueAccent),
+            backgroundColor: const Color.fromARGB(
+              255,
+              27,
+              188,
+              151,
+            ).withOpacity(0.15),
+            child: Icon(icon, color: const Color.fromARGB(255, 212, 76, 46)),
           ),
           SizedBox(height: 6),
           Text(label, style: TextStyle(fontSize: 13)),
