@@ -2,8 +2,8 @@ import 'package:eason_nebula/services/car_data_service.dart';
 import 'package:eason_nebula/ui/Base/EasonBasePage.dart';
 import 'package:flutter/material.dart';
 
-class CarPage extends EasonBasePage {
-  const CarPage({Key? key}) : super(key: key);
+class CarDataTablePage extends EasonBasePage {
+  const CarDataTablePage({Key? key}) : super(key: key);
 
   @override
   String get title => '车辆数据';
@@ -58,7 +58,6 @@ class _CarPageBodyState extends State<_CarPageBody> {
     });
   }
 
-  @override
   @override
   Widget build(BuildContext context) {
     if (titles.isEmpty || _carValues.isEmpty) {

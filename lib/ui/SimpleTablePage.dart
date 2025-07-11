@@ -1,11 +1,12 @@
 import 'package:eason_nebula/ui/Base/EasonBasePage.dart';
+import 'package:eason_nebula/ui/TableHeaderCell.dart';
 import 'package:flutter/material.dart';
 
 class SimpleTablePage extends EasonBasePage {
   SimpleTablePage({Key? key}) : super(key: key);
 
   @override
-  String get title => '用餐信息表';
+  String get title => '信息';
 
   final List<List<String>> data = [
     ['曹伟席', '18', '324'],
@@ -74,9 +75,9 @@ class SimpleTablePage extends EasonBasePage {
               TableRow(
                 decoration: BoxDecoration(color: Colors.blueGrey.shade100),
                 children: const [
-                  _TableHeaderCell(text: '姓名'),
-                  _TableHeaderCell(text: '用餐天数'),
-                  _TableHeaderCell(text: '餐费'),
+                  TableHeaderCell(text: '姓名'),
+                  TableHeaderCell(text: '用餐天数'),
+                  TableHeaderCell(text: '餐费'),
                 ],
               ),
               // 数据行
@@ -115,23 +116,4 @@ class SimpleTablePage extends EasonBasePage {
   }
 }
 
-class _TableHeaderCell extends StatelessWidget {
-  final String text;
-  const _TableHeaderCell({required this.text, Key? key}) : super(key: key);
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 14),
-      child: Text(
-        text,
-        textAlign: TextAlign.center,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 16,
-          color: Colors.black87,
-        ),
-      ),
-    );
-  }
-}

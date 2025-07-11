@@ -1,5 +1,8 @@
 import 'package:eason_nebula/ui/AboutPage.dart';
+import 'package:eason_nebula/ui/CarDataTablePage.dart';
 import 'package:eason_nebula/ui/CarPage.dart';
+import 'package:eason_nebula/ui/DataTablePage.dart';
+import 'package:eason_nebula/ui/PaginatedDataTablePage.dart';
 import 'package:eason_nebula/ui/SimpleTablePage.dart';
 import 'package:eason_nebula/utils/EasonGlobal.dart';
 
@@ -38,6 +41,9 @@ void main() {
         '/aboutPage': (context) => AboutPage(),
         '/CarPage': (context) => CarPage(),
         '/SimpleTablePage': (context) => SimpleTablePage(),
+        '/PaginatedDataTablePage': (context) => PaginatedDataTablePage(),
+        '/DataTablePage': (context) => DataTablePage(),
+        '/CarDataTablePage': (context) => CarDataTablePage(),
       },
     ),
   ); // This is the entry point of the application.

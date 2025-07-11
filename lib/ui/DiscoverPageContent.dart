@@ -82,20 +82,44 @@ class _DiscoverPageContentState extends State<DiscoverPageContent> {
       "jump": "CarPage",
     },
     {
+      "title": "汽车DataTable",
+      "icon": Icons.local_fire_department,
+      "color": Colors.redAccent,
+      "jump": "CarDataTablePage",
+    },
+    {
       "title": "旅游",
       "icon": Icons.star,
       "color": Colors.blueAccent,
       "jump": "TravelPage",
     },
-    {"title": "话题三", "icon": Icons.thumb_up, "color": Colors.greenAccent},
-    {"title": "话题四", "icon": Icons.favorite, "color": Colors.pinkAccent},
-    {"title": "话题五", "icon": Icons.share, "color": Colors.orangeAccent},
+
+    {
+      "title": "Paginated",
+      "icon": Icons.share,
+      "color": Colors.orangeAccent,
+      "jump": "PaginatedDataTablePage",
+    },
+    {
+      "title": "DataTable",
+      "icon": Icons.notifications,
+      "color": Colors.lightBlueAccent,
+      "jump": "DataTablePage",
+    },
+    {
+      "title": "关于",
+      "icon": Icons.account_balance,
+      "color": Colors.tealAccent,
+      "jump": "aboutPage",
+    },
     {
       "title": "饭费",
       "icon": Icons.comment,
       "color": Colors.purpleAccent,
       "jump": "SimpleTablePage",
     },
+    {"title": "话题三", "icon": Icons.thumb_up, "color": Colors.greenAccent},
+    {"title": "话题四", "icon": Icons.favorite, "color": Colors.pinkAccent},
   ];
 
   /// 解析内容中的表情符号
