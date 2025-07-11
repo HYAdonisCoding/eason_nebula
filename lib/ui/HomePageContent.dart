@@ -1,5 +1,6 @@
 import 'package:eason_nebula/ui/HotPhonePage.dart';
 import 'package:eason_nebula/ui/RankListenPage.dart';
+import 'package:eason_nebula/ui/WebSocketPage.dart';
 import 'package:eason_nebula/utils/EasonAppBar.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -125,7 +126,18 @@ class _HomePageContentState extends State<HomePageContent> {
           );
         },
       },
-      {'icon': Icons.message, 'label': '消息', 'onTap': () => debugPrint('消息')},
+      {
+        'icon': Icons.message,
+        'label': '消息',
+        'onTap': () {
+          debugPrint('消息');
+          // 这里可以添加跳转到消息页面的逻辑
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => WebSocketPage()),
+          );
+        },
+      },
       {
         'icon': Icons.settings,
         'label': '设置',
