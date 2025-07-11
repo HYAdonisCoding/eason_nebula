@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 import 'package:eason_nebula/ui/Base/EasonBasePage.dart';
 import 'package:flutter/material.dart';
@@ -40,13 +41,23 @@ class _HotPhonePageState extends BasePageState<HotPhonePage> {
   /// 异步加载手机数据
   Future<List> loadPhoneData() async {
     try {
-      final jsonStr = await rootBundle
-          .loadString('lib/assets/data/hotPhone.json')
+      final response = await http
+          .get(
+            Uri.parse(
+              'https://mock.mengxuegu.com/mock/684fd50e1fd2b25100380d96/v1.0/phonelist.do',
+            ),
+          )
           .timeout(const Duration(seconds: 10));
-      final data = json.decode(jsonStr) as List<dynamic>;
-      return data;
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body) as List<dynamic>;
+        return data;
+      } else {
+        throw Exception('网络请求失败，状态码: ${response.statusCode}');
+      }
     } on TimeoutException catch (_) {
       throw Exception('加载超时，请稍后重试');
+    } catch (e) {
+      throw Exception('加载数据失败: $e');
     }
   }
 
