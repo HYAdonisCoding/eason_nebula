@@ -1,4 +1,5 @@
 import 'package:eason_nebula/ui/HotPhonePage.dart';
+import 'package:eason_nebula/ui/RankListenPage.dart';
 import 'package:eason_nebula/utils/EasonAppBar.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -7,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 import '../utils/EasonMessenger.dart';
 import 'SettingPage.dart';
 import 'HotDetailPage.dart';
+import 'dart:math';
 
 class HomePageContent extends StatefulWidget {
   @override
@@ -112,6 +114,16 @@ class _HomePageContentState extends State<HomePageContent> {
         'icon': Icons.qr_code_scanner,
         'label': '扫一扫',
         'onTap': () => debugPrint('扫一扫'),
+      },
+      {
+        'icon': Icons.radio,
+        'label': '排行榜',
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => RankListenPage()),
+          );
+        },
       },
       {'icon': Icons.message, 'label': '消息', 'onTap': () => debugPrint('消息')},
       {
@@ -350,21 +362,40 @@ class _QuickAction extends StatelessWidget {
   final VoidCallback? onTap;
   const _QuickAction({required this.icon, required this.label, this.onTap});
 
+  // 随机生成柔和的浅色背景色
+  Color _randomLightColor() {
+    final random = Random(icon.codePoint); // 用图标 codePoint 保证同一图标颜色一致
+    return Color.fromARGB(
+      255,
+      150 + random.nextInt(100),
+      150 + random.nextInt(100),
+      150 + random.nextInt(100),
+    );
+  }
+
+  // 随机生成图标颜色
+  Color _randomIconColor() {
+    final random = Random(icon.codePoint * 2);
+    return Color.fromARGB(
+      255,
+      100 + random.nextInt(155),
+      100 + random.nextInt(155),
+      100 + random.nextInt(155),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final bgColor = _randomLightColor().withOpacity(0.2);
+    final iconColor = _randomIconColor();
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: Column(
         children: [
           CircleAvatar(
-            backgroundColor: const Color.fromARGB(
-              255,
-              27,
-              188,
-              151,
-            ).withOpacity(0.15),
-            child: Icon(icon, color: const Color.fromARGB(255, 212, 76, 46)),
+            backgroundColor: bgColor,
+            child: Icon(icon, color: iconColor),
           ),
           SizedBox(height: 6),
           Text(label, style: TextStyle(fontSize: 13)),
