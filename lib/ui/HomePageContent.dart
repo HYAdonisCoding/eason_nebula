@@ -1,9 +1,12 @@
+import 'package:eason_nebula/ui/DatabasePage.dart';
 import 'package:eason_nebula/ui/FileOperationPage.dart';
 import 'package:eason_nebula/ui/GesturePage.dart';
 import 'package:eason_nebula/ui/HotPhonePage.dart';
 import 'package:eason_nebula/ui/RankListenPage.dart';
+import 'package:eason_nebula/ui/WalletPage.dart';
 import 'package:eason_nebula/ui/WebSocketPage.dart';
 import 'package:eason_nebula/utils/EasonAppBar.dart';
+import 'package:eason_nebula/utils/EasonFaceAuth.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
@@ -191,8 +194,34 @@ class _HomePageContentState extends State<HomePageContent> {
           );
         },
       },
-      {'icon': Icons.history, 'label': '历史', 'onTap': () => debugPrint('历史')},
-      {'icon': Icons.wallet, 'label': '钱包', 'onTap': () => debugPrint('钱包')},
+      {
+        'icon': Icons.dataset_linked_outlined,
+        'label': '数据库',
+        'onTap': () {
+          debugPrint('数据库');
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => DatabasePage()),
+          );
+        },
+      },
+      {
+        'icon': Icons.wallet,
+        'label': '钱包',
+        'onTap': () async {
+          debugPrint('钱包');
+          // 在进入钱包前进行面容识别
+          final success = await EasonFaceAuth.verifyFace();
+          if (success) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => WalletPage()),
+            );
+          } else {
+            EasonMessenger.showError(context, message: '面容识别失败，无法进入钱包');
+          }
+        },
+      },
       {'icon': Icons.share, 'label': '分享', 'onTap': () => debugPrint('分享')},
       {'icon': Icons.help, 'label': '帮助', 'onTap': () => debugPrint('帮助')},
       {'icon': Icons.feedback, 'label': '反馈', 'onTap': () => debugPrint('反馈')},
