@@ -1,3 +1,5 @@
+import 'package:eason_nebula/ui/FileOperationPage.dart';
+import 'package:eason_nebula/ui/GesturePage.dart';
 import 'package:eason_nebula/ui/HotPhonePage.dart';
 import 'package:eason_nebula/ui/RankListenPage.dart';
 import 'package:eason_nebula/ui/WebSocketPage.dart';
@@ -149,6 +151,17 @@ class _HomePageContentState extends State<HomePageContent> {
         },
       },
       {
+        'icon': Icons.file_copy,
+        'label': '文件',
+        'onTap': () {
+          debugPrint('文件');
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => FileOperationPage()),
+          );
+        },
+      },
+      {
         'icon': Icons.phone_iphone,
         'label': '推荐',
         'onTap': () {
@@ -159,7 +172,25 @@ class _HomePageContentState extends State<HomePageContent> {
           );
         },
       },
-      {'icon': Icons.star, 'label': '收藏', 'onTap': () => debugPrint('收藏')},
+      {
+        'icon': Icons.camera,
+        'label': '拍照',
+        'onTap': () {
+          debugPrint('拍照');
+          // 这里可以添加拍照逻辑
+        },
+      },
+      {
+        'icon': Icons.gesture,
+        'label': '手势',
+        'onTap': () {
+          debugPrint('手势');
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => GesturePage()),
+          );
+        },
+      },
       {'icon': Icons.history, 'label': '历史', 'onTap': () => debugPrint('历史')},
       {'icon': Icons.wallet, 'label': '钱包', 'onTap': () => debugPrint('钱包')},
       {'icon': Icons.share, 'label': '分享', 'onTap': () => debugPrint('分享')},
