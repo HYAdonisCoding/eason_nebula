@@ -3,6 +3,7 @@ import 'package:eason_nebula/ui/FileOperationPage.dart';
 import 'package:eason_nebula/ui/GesturePage.dart';
 import 'package:eason_nebula/ui/HotPhonePage.dart';
 import 'package:eason_nebula/ui/RankListenPage.dart';
+import 'package:eason_nebula/ui/ScanCodePage.dart';
 import 'package:eason_nebula/ui/WalletPage.dart';
 import 'package:eason_nebula/ui/WebSocketPage.dart';
 import 'package:eason_nebula/utils/EasonAppBar.dart';
@@ -15,6 +16,7 @@ import '../utils/EasonMessenger.dart';
 import 'SettingPage.dart';
 import 'HotDetailPage.dart';
 import 'dart:math';
+import 'package:eason_nebula/utils/EasonGlobal.dart';
 
 class HomePageContent extends StatefulWidget {
   @override
@@ -58,7 +60,12 @@ class _HomePageContentState extends State<HomePageContent> {
         title: '扫一扫',
         icon: Icons.qr_code_scanner,
         iconColor: Colors.deepPurple,
-        onTap: () => debugPrint('扫一扫'),
+        onTap: () {
+          Navigator.push(
+            navigatorKey.currentContext!,
+            MaterialPageRoute(builder: (_) => ScanCodePage()),
+          );
+        },
       ),
     ];
 
@@ -119,7 +126,13 @@ class _HomePageContentState extends State<HomePageContent> {
       {
         'icon': Icons.qr_code_scanner,
         'label': '扫一扫',
-        'onTap': () => debugPrint('扫一扫'),
+        'onTap': () {
+          debugPrint('扫一扫');
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => ScanCodePage()),
+          );
+        },
       },
       {
         'icon': Icons.radio,

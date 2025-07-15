@@ -46,6 +46,8 @@ dependencies:
   web_socket_channel: ^2.4.0
   path_provider: ^2.0.0
   local_auth: ^2.1.5
+  mobile_scanner: ^7.0.1
+  vibration: ^1.7.4
 
 dev_dependencies:
   flutter_test:
