@@ -8,6 +8,7 @@ import 'package:eason_nebula/ui/WalletPage.dart';
 import 'package:eason_nebula/ui/WebSocketPage.dart';
 import 'package:eason_nebula/utils/EasonAppBar.dart';
 import 'package:eason_nebula/utils/EasonFaceAuth.dart';
+import 'package:eason_nebula/utils/LoadingDialog.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
@@ -223,20 +224,54 @@ class _HomePageContentState extends State<HomePageContent> {
         'label': '钱包',
         'onTap': () async {
           debugPrint('钱包');
-          // 在进入钱包前进行面容识别
-          final success = await EasonFaceAuth.verifyFace();
-          if (success) {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => WalletPage()),
-            );
-          } else {
-            EasonMessenger.showError(context, message: '面容识别失败，无法进入钱包');
-          }
+          LoadingDialog.show(
+            context,
+            message: '正在进入钱包',
+            onDismiss: () async {
+              // 在进入钱包前进行面容识别
+              final success = await EasonFaceAuth.verifyFace();
+              if (success) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => WalletPage()),
+                );
+              } else {
+                EasonMessenger.showError(context, message: '面容识别失败，无法进入钱包');
+              }
+            },
+          );
         },
       },
-      {'icon': Icons.share, 'label': '分享', 'onTap': () => debugPrint('分享')},
-      {'icon': Icons.help, 'label': '帮助', 'onTap': () => debugPrint('帮助')},
+      {
+        'icon': Icons.share,
+        'label': '分享',
+        'onTap': () async {
+          debugPrint('分享');
+          LoadingDialog.show(
+            context,
+            message: '',
+            onDismiss: () async {
+              //
+              debugPrint('分享了');
+            },
+          );
+        },
+      },
+      {
+        'icon': Icons.help,
+        'label': '帮助',
+        'onTap': () async {
+          debugPrint('帮助');
+          LoadingDialog.show(
+            context,
+            message: '加载中',
+            onDismiss: () async {
+              //
+              debugPrint('帮助了');
+            },
+          );
+        },
+      },
       {'icon': Icons.feedback, 'label': '反馈', 'onTap': () => debugPrint('反馈')},
       {'icon': Icons.info, 'label': '关于', 'onTap': () => debugPrint('关于')},
       {'icon': Icons.bookmark, 'label': '书签', 'onTap': () => debugPrint('书签')},
