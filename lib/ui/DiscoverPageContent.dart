@@ -1,7 +1,11 @@
 import 'package:eason_nebula/ui/Base/EasonBasePage.dart';
 import 'package:eason_nebula/ui/DetailNotePage.dart';
+import 'package:eason_nebula/ui/ScanCodePage.dart';
 import 'package:eason_nebula/ui/TemplePage.dart';
 import 'package:eason_nebula/utils/EasonAppBar.dart';
+import 'package:eason_nebula/utils/EasonGlobal.dart';
+import 'package:eason_nebula/utils/EasonToolBar.dart';
+import 'package:eason_nebula/utils/PopupUtils.dart';
 import 'package:extended_image/extended_image.dart';
 
 import 'CommentPage.dart';
@@ -32,12 +36,15 @@ class DiscoverPageContent extends EasonBasePage {
   ];
 
   @override
-  // TODO: implement showBack
   bool get showBack => false;
 
   @override
   State<DiscoverPageContent> createState() => _DiscoverPageContentState();
 
+  @override
+  bool get useCustomAppBar => true;
+
+  /// 加载热搜数据
   Future<void> _loadRedNote() async {
     // This will be overridden in state, but we need this here to satisfy the menuItems callback.
   }
@@ -45,6 +52,9 @@ class DiscoverPageContent extends EasonBasePage {
 
 class _DiscoverPageContentState extends BasePageState<DiscoverPageContent> {
   List<dynamic> _hotList = [];
+
+  final GlobalKey _menuKey = GlobalKey();
+  final GlobalKey _cameraKey = GlobalKey();
 
   @override
   void initState() {
@@ -154,35 +164,84 @@ class _DiscoverPageContentState extends BasePageState<DiscoverPageContent> {
 
   @override
   Widget buildContent(BuildContext context) {
-    return RefreshIndicator(
-      onRefresh: _loadRedNote,
-      child: ListView(
-        padding: EdgeInsets.all(24),
-        children: [
-          Card(
-            elevation: 3,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-            child: ListTile(
-              leading: Icon(Icons.search, color: Colors.deepPurple, size: 32),
-              title: Text('全网热搜'),
-              subtitle: Text('看看大家都在关注什么'),
-              trailing: Icon(Icons.arrow_forward_ios, size: 18),
-              onTap: () {},
+    return Column(
+      children: [
+        EasonToolBar(
+          icons: [Icons.menu_rounded, Icons.camera_enhance_outlined],
+          keys: {0: _menuKey, 1: _cameraKey},
+          onTap: (index) {
+            debugPrint('点击了第 $index 个图标');
+            if (index == 0) {
+              // 打开侧边栏
+
+              PopupUtils.showCustomPopup(
+                context,
+                anchorKey: _menuKey,
+                items: [
+                  EasonMenuItem(
+                    icon: Icons.menu_rounded,
+                    iconColor: Colors.blue,
+                    title: '侧边栏',
+                    onTap: () {
+                      debugPrint('点击了侧边栏');
+                    },
+                  ),
+                  EasonMenuItem(
+                    icon: Icons.camera_enhance_outlined,
+                    iconColor: Colors.blue,
+                    title: '相机',
+                    onTap: () {
+                      debugPrint('点击了相机');
+                    },
+                  ),
+                ],
+              );
+            } else if (index == 1) {
+              // 打开相机
+              Navigator.push(
+                navigatorKey.currentContext!,
+                MaterialPageRoute(builder: (_) => ScanCodePage()),
+              );
+            }
+          },
+        ),
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: _loadRedNote,
+            child: ListView(
+              padding: EdgeInsets.all(24),
+              children: [
+                Card(
+                  elevation: 3,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.search,
+                      color: Colors.deepPurple,
+                      size: 32,
+                    ),
+                    title: Text('全网热搜'),
+                    subtitle: Text('看看大家都在关注什么'),
+                    trailing: Icon(Icons.arrow_forward_ios, size: 18),
+                    onTap: () {},
+                  ),
+                ),
+                SizedBox(height: 24),
+                Text(
+                  '热门话题',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 12),
+                _HotTopicGridSection(hotTopics: hotTopics),
+                SizedBox(height: 32),
+                _buildRecommendationSection(),
+              ],
             ),
           ),
-          SizedBox(height: 24),
-          Text(
-            '热门话题',
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 12),
-          _HotTopicGridSection(hotTopics: hotTopics),
-          SizedBox(height: 32),
-          _buildRecommendationSection(),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

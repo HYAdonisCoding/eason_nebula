@@ -17,11 +17,8 @@ abstract class EasonBasePage extends StatefulWidget {
   /// 可选：展示左侧返回按钮，默认返回 null。
   bool get showBack => true;
 
-  /// 构建页面内容的 Widget。
-  /// 子类必须实现此方法以提供页面的主体内容。
-  ///
-  /// [context] 是当前的 BuildContext，用于构建页面内容。
-  /// 返回一个 Widget，通常是一个包含页面主体内容的 Container、Column 或其他布局组件。
+  /// 如果返回 true，子类自己实现 appBar，这里将不使用默认的 EasonAppBar。
+  bool get useCustomAppBar => false;
 }
 
 abstract class BasePageState<T extends EasonBasePage> extends State<T> {
@@ -77,18 +74,21 @@ abstract class BasePageState<T extends EasonBasePage> extends State<T> {
   /*******  e25797b7-f250-4886-b2f1-e1d0382bd127  *******/
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: EasonAppBar(
-        title: widget.title,
-        menuItems: widget.menuItems(context),
-        leadingMenuItems: widget.leadingMenuItems(context),
-        onBack: () {
-          Navigator.of(context).pop();
-        },
-        showBack: widget.showBack ?? true,
-      ),
+      appBar: widget.useCustomAppBar
+          ? null
+          : EasonAppBar(
+              title: widget.title,
+              menuItems: widget.menuItems(context),
+              leadingMenuItems: widget.leadingMenuItems(context),
+              onBack: () {
+                Navigator.of(context).pop();
+              },
+              showBack: widget.showBack ?? true,
+            ),
       body: buildContent(context),
     );
   }
 
-  Widget buildContent(BuildContext context); // ← 子类必须实现
+  /// 子类必须实现此方法来提供页面主体内容
+  Widget buildContent(BuildContext context);
 }
