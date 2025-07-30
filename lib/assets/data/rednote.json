@@ -10,39 +10,41 @@
                 "xsec_token": "ABRjDMOlFBlsOFRfXNiaqC-IWv_Bt1rlL8LseFeAY31vM=",
                 "id": "686df891000000000d01bae3",
                 "model_type": "note",
-                "note_card": {
-                    "display_title": "找个陪我一起玩的旅游搭子，《女找男》",
-                    "user": {
-                        "nickname": "矢泽玄素",
-                        "xsec_token": "ABE6YpCZLsK_pQRDGVFa1H67RmG77DBtpOpwUDu0zjn78=",
-                        "nick_name": "矢泽玄素",
-                        "avatar": "https://sns-avatar-qc.xhscdn.com/avatar/1040g2jo31jelgji1j06g5p9vouohgpc86ilqh8g",
-                        "user_id": "653fc7b10000000006006588"
-                    },
-                    "interact_info": {
-                        "liked": false,
-                        "liked_count": "9"
-                    },
-                    "cover": {
-                        "file_id": "",
-                        "height": 1600,
-                        "width": 1200,
-                        "url": "",
-                        "info_list": [
-                            {
-                                "image_scene": "WB_PRV",
-                                "url": "http://sns-webpic-qc.xhscdn.com/202507091346/216e70ff32554878eb73c1417d9f1a07/1040g2sg31jn2p0reia8g5p9vouohgpc89nlu398!nc_n_webp_prv_1"
+                "noteCard": {
+                            "cover": {
+                                "fileId": "",
+                                "height": 1440,
+                                "width": 1080,
+                                "url": "",
+                                "infoList": [{
+                                    "imageScene": "WB_PRV",
+                                    "url": "http:\u002F\u002Fsns-webpic-qc.xhscdn.com\u002F202507301700\u002F394273d9be4e1f79adf2cd60d12374b6\u002F1040g2sg31kfv950cj2e05ps5bqgi7u04g2a1l5g!nc_n_webp_prv_1"
+                                }, {
+                                    "imageScene": "WB_DFT",
+                                    "url": "http:\u002F\u002Fsns-webpic-qc.xhscdn.com\u002F202507301700\u002Fd6575ec729dbdfdf10bbf74ae28c4efa\u002F1040g2sg31kfv950cj2e05ps5bqgi7u04g2a1l5g!nc_n_webp_mw_1"
+                                }],
+                                "urlPre": "http:\u002F\u002Fsns-webpic-qc.xhscdn.com\u002F202507301700\u002F394273d9be4e1f79adf2cd60d12374b6\u002F1040g2sg31kfv950cj2e05ps5bqgi7u04g2a1l5g!nc_n_webp_prv_1",
+                                "urlDefault": "http:\u002F\u002Fsns-webpic-qc.xhscdn.com\u002F202507301700\u002Fd6575ec729dbdfdf10bbf74ae28c4efa\u002F1040g2sg31kfv950cj2e05ps5bqgi7u04g2a1l5g!nc_n_webp_mw_1"
                             },
-                            {
-                                "image_scene": "WB_DFT",
-                                "url": "http://sns-webpic-qc.xhscdn.com/202507091346/f693eed218bc947c17f841892da9e353/1040g2sg31jn2p0reia8g5p9vouohgpc89nlu398!nc_n_webp_mw_1"
+                            "video": {
+                                "capa": {
+                                    "duration": 91
+                                }
+                            },
+                            "type": "video",
+                            "displayTitle": "美国人在中国 外国人在中国",
+                            "user": {
+                                "nickname": "Krisdewdew 克丽丝露",
+                                "xsecToken": "AB8YBQRV1nAVW0VgBc1xSOIol1-S30w-hTffmHSLZZ7Ec=",
+                                "nickName": "Krisdewdew 克丽丝露",
+                                "avatar": "https:\u002F\u002Fsns-avatar-qc.xhscdn.com\u002Favatar\u002F1040g2jo31ib88iqmgc705ps5bqgi7u0405v6800",
+                                "userId": "67855ea1000000000803f804"
+                            },
+                            "interactInfo": {
+                                "liked": false,
+                                "likedCount": "272"
                             }
-                        ],
-                        "url_pre": "http://sns-webpic-qc.xhscdn.com/202507091346/216e70ff32554878eb73c1417d9f1a07/1040g2sg31jn2p0reia8g5p9vouohgpc89nlu398!nc_n_webp_prv_1",
-                        "url_default": "http://sns-webpic-qc.xhscdn.com/202507091346/f693eed218bc947c17f841892da9e353/1040g2sg31jn2p0reia8g5p9vouohgpc89nlu398!nc_n_webp_mw_1"
-                    },
-                    "type": "normal"
-                },
+                        },
                 "track_id": "2f1f5ev2n8ujrwanpos8u"
             },
             {

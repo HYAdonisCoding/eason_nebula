@@ -48,6 +48,7 @@ dependencies:
   local_auth: ^2.1.5
   mobile_scanner: ^7.0.1
   vibration: ^1.7.4
+  flutter_inappwebview: ^6.1.5
 
 dev_dependencies:
   flutter_test:

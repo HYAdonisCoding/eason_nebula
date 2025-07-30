@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:eason_nebula/ui/Base/EasonBasePage.dart';
+import 'package:eason_nebula/utils/CookieUtils.dart';
 import 'package:eason_nebula/utils/EasonAppBar.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -95,12 +96,13 @@ class _CommentPageState extends BasePageState<CommentPage> {
 
     try {
       final item = widget.item;
-      print('加载评论: ${item['note_card']['display_title']}');
+      debugPrint('加载评论: ${item['note_card']['display_title']}');
       // 这里使用了一个示例 URL，请根据实际情况替换
       String url =
           'https://edith.xiaohongshu.com/api/sns/web/v2/comment/page?note_id=${item['id']}&cursor=&top_comment_id=&image_formats=jpg,webp,avif&xsec_token=${item['xsec_token']}';
-      print('请求 URL: $url');
+      debugPrint('请求 URL: $url');
       // 使用网络请求获取评论数据
+      final cookie = await CookieUtils.loadAndGetCookie();
       final response = await http.get(
         Uri.parse(url),
         headers: {
@@ -108,8 +110,7 @@ class _CommentPageState extends BasePageState<CommentPage> {
               'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36',
           'Referer': 'https://www.xiaohongshu.com/',
           'Origin': 'https://www.xiaohongshu.com',
-          'Cookie':
-              'abRequestId=d56346ab-b128-53f8-90ae-02df68a79a68; webBuild=4.72.0; a1=197ecc73b2856s3u00rp2wazu32g4e17hcpphxwwg30000136672; webId=ad7987f65042c5036d4ff529eea08fdd; gid=yjWdSSW4YYxKyjWdSSWqDSCEJY2KMq788FUJUEkE0u7qJUq8k4dyWx888yqKKWJ84Ji0WY4q; unread={%22ub%22:%22684aacd50000000021001688%22%2C%22ue%22:%2268626516000000002201ebb2%22%2C%22uc%22:28}; web_session=040069b234715130a9c6f781583a4b924a0f4f; customer-sso-sid=68c517524892465105587085leya9gmbsqjsixiq; x-user-id-creator.xiaohongshu.com=63403219000000001802f990; customerClientId=783964759566655; access-token-creator.xiaohongshu.com=customer.creator.AT-68c517524892465105587086bht4muukufw7kuzn; galaxy_creator_session_id=nvs56xaFtWMTKOxgSoVOrMbbsa7fDCdqSwzQ; galaxy.creator.beaker.session.id=1752025556325091492911; loadts=1752030047500; acw_tc=0ad585a917520300478796746e70204a62739238767b7fad7045862d63e401; xsecappid=ugc; websectiga=10f9a40ba454a07755a08f27ef8194c53637eba4551cf9751c009d9afb564467; sec_poison_id=3e4cba17-abfb-4045-9d3a-9afab5d31404', // 如果你用到了该请求头，可补上
+          'Cookie': cookie,
           // 你也可以加上 Cookie/X-Sec-Token/X-Timestamp 等字段（如果服务端验证）
         },
       );
@@ -118,7 +119,8 @@ class _CommentPageState extends BasePageState<CommentPage> {
         setState(() {
           // 取data中的comments字段
           _comments = data['data']['comments'] ?? [];
-          // print('加载评论成功: ${_comments} ');
+          debugPrint('返回报文 data: $data');
+          // debugPrint('加载评论成功: ${_comments} ');
           if (_comments.isEmpty) {
             debugPrint('没有评论数据');
           } else {

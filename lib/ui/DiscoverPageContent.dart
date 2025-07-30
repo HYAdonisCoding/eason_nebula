@@ -2,6 +2,7 @@ import 'package:eason_nebula/ui/Base/EasonBasePage.dart';
 import 'package:eason_nebula/ui/DetailNotePage.dart';
 import 'package:eason_nebula/ui/ScanCodePage.dart';
 import 'package:eason_nebula/ui/TemplePage.dart';
+import 'package:eason_nebula/utils/CookieUtils.dart';
 import 'package:eason_nebula/utils/EasonAppBar.dart';
 import 'package:eason_nebula/utils/EasonGlobal.dart';
 import 'package:eason_nebula/utils/EasonToolBar.dart';
@@ -55,11 +56,20 @@ class _DiscoverPageContentState extends BasePageState<DiscoverPageContent> {
 
   final GlobalKey _menuKey = GlobalKey();
   final GlobalKey _cameraKey = GlobalKey();
+  String? _cookie;
 
   @override
   void initState() {
     super.initState();
     _loadRedNote(); // 调用加载方法
+    _loadCookie();
+  }
+
+  Future<void> _loadCookie() async {
+    final c = await CookieUtils.loadAndGetCookie();
+    setState(() {
+      _cookie = c;
+    });
   }
 
   /// 加载热搜数据
@@ -156,7 +166,9 @@ class _DiscoverPageContentState extends BasePageState<DiscoverPageContent> {
           mainAxisSpacing: 12,
           crossAxisSpacing: 12,
           childAspectRatio: 0.68,
-          children: _hotList.map((item) => DiscoverGridItemCard(item)).toList(),
+          children: _hotList
+              .map((item) => DiscoverGridItemCard(item, cookie: _cookie))
+              .toList(),
         ),
       ],
     );
@@ -248,7 +260,8 @@ class _DiscoverPageContentState extends BasePageState<DiscoverPageContent> {
 
 class DiscoverGridItemCard extends StatelessWidget {
   final dynamic item;
-  const DiscoverGridItemCard(this.item);
+  final String? cookie;
+  const DiscoverGridItemCard(this.item, {this.cookie});
 
   @override
   Widget build(BuildContext context) {
@@ -297,13 +310,14 @@ class DiscoverGridItemCard extends StatelessWidget {
                     color: Colors.grey[200],
                   ),
                   clipBehavior: Clip.antiAlias,
-                  child: coverUrl.isNotEmpty
+                  child: coverUrl.isNotEmpty && cookie != null
                       ? ExtendedImage.network(
                           coverUrl,
                           headers: {
                             'User-Agent':
                                 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148',
                             'Referer': 'https://www.xiaohongshu.com/',
+                            'Cookie': cookie!,
                           },
                           fit: BoxFit.cover,
                           width: double.infinity,
