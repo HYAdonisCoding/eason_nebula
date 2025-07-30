@@ -1,3 +1,4 @@
+import 'package:eason_nebula/ui/Animations/AnimationPage.dart';
 import 'package:eason_nebula/ui/DatabasePage.dart';
 import 'package:eason_nebula/ui/FileOperationPage.dart';
 import 'package:eason_nebula/ui/GesturePage.dart';
@@ -239,6 +240,17 @@ class _HomePageContentState extends State<HomePageContent> {
                 EasonMessenger.showError(context, message: '面容识别失败，无法进入钱包');
               }
             },
+          );
+        },
+      },
+      {
+        'icon': Icons.animation,
+        'label': '动画',
+        'onTap': () {
+          debugPrint('动画');
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => AnimationPage()),
           );
         },
       },
