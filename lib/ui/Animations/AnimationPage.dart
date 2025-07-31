@@ -34,7 +34,17 @@ class _AnimationPageState extends BasePageState<AnimationPage> {
               list[index],
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
             ),
-            leading: Icon(Icons.animation, color: Colors.blueAccent),
+            leading: Hero(
+              tag: 'hero-animation-icon-$index',
+              child: index == 0
+                  ? Icon(Icons.ballot_sharp, color: Colors.blueAccent)
+                  : index == 1
+                  ? Icon(
+                      Icons.fire_hydrant_alt_outlined,
+                      color: Colors.blueAccent,
+                    )
+                  : Icon(Icons.straighten, color: Colors.teal),
+            ),
             trailing: Icon(
               Icons.arrow_forward_ios,
               size: 16,
@@ -54,7 +64,10 @@ class _AnimationPageState extends BasePageState<AnimationPage> {
                 // 导航到Hero动画页面
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => HeroAnimation()),
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        HeroAnimation(tag: 'hero-animation-icon-$index'),
+                  ),
                 );
               } else if (index == 2) {
                 // 导航到交错动画页面

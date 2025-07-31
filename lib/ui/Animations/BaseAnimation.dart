@@ -11,14 +11,63 @@ class BaseAnimation extends EasonBasePage {
   State<BaseAnimation> createState() => _BaseAnimationState();
 }
 
-class _BaseAnimationState extends BasePageState<BaseAnimation> {
+class _BaseAnimationState extends BasePageState<BaseAnimation>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _valueController;
+  late Animation<double> _doubleAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _valueController = AnimationController(
+      duration: Duration(seconds: 3),
+      vsync: this,
+    );
+    _doubleAnimation = Tween<double>(begin: 0.0, end: 100.0).animate(
+      CurvedAnimation(parent: _valueController, curve: Curves.easeInOut),
+    );
+
+    _doubleAnimation.addStatusListener((status) {
+      debugPrint('Animation status: $status');
+      if (status == AnimationStatus.forward) {
+        debugPrint('Animation started');
+      } else if (status == AnimationStatus.reverse) {
+        debugPrint('Animation reversed');
+      } else if (status == AnimationStatus.completed) {
+        debugPrint('Animation completed');
+      } else if (status == AnimationStatus.dismissed) {
+        debugPrint('Animation dismissed');
+        _valueController.forward();
+      }
+    });
+
+    _valueController.forward();
+  }
+
+  @override
+  void dispose() {
+    _valueController.dispose();
+    super.dispose();
+  }
+
+  Widget animation(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _doubleAnimation,
+      builder: (context, child) {
+        return Container(
+          width: _doubleAnimation.value,
+          height: _doubleAnimation.value,
+          color: Colors.teal,
+          margin: EdgeInsets.all(10),
+          alignment: Alignment.center,
+          child: FlutterLogo(),
+        );
+      },
+    );
+  }
+
   @override
   Widget buildContent(BuildContext context) {
-    return Center(
-      child: Text(
-        'BaseAnimation Content',
-        style: TextStyle(fontSize: 24, color: Colors.blue),
-      ),
-    );
+    return Center(child: animation(context));
   }
 }
