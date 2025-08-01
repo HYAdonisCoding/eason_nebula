@@ -58,7 +58,10 @@ class _AnimationPageState extends BasePageState<AnimationPage> {
                 // 导航到基础动画页面
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => BaseAnimation()),
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        BaseAnimation(tag: 'hero-animation-icon-$index'),
+                  ),
                 );
               } else if (index == 1) {
                 // 导航到Hero动画页面
@@ -73,7 +76,10 @@ class _AnimationPageState extends BasePageState<AnimationPage> {
                 // 导航到交错动画页面
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => StaggeredAnimation()),
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        StaggeredAnimation(tag: 'hero-animation-icon-$index'),
+                  ),
                 );
               }
             },

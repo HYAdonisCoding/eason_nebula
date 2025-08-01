@@ -2,7 +2,9 @@ import 'package:eason_nebula/ui/Base/EasonBasePage.dart';
 import 'package:flutter/material.dart';
 
 class BaseAnimation extends EasonBasePage {
-  const BaseAnimation({Key? key}) : super(key: key);
+  final String tag;
+
+  const BaseAnimation({Key? key, required this.tag}) : super(key: key);
 
   @override
   String get title => 'BaseAnimation';
@@ -54,13 +56,16 @@ class _BaseAnimationState extends BasePageState<BaseAnimation>
     return AnimatedBuilder(
       animation: _doubleAnimation,
       builder: (context, child) {
-        return Container(
-          width: _doubleAnimation.value,
-          height: _doubleAnimation.value,
-          color: Colors.teal,
-          margin: EdgeInsets.all(10),
-          alignment: Alignment.center,
-          child: FlutterLogo(),
+        return Hero(
+          tag: widget.tag,
+          child: Container(
+            width: _doubleAnimation.value,
+            height: _doubleAnimation.value,
+            color: Colors.teal,
+            margin: EdgeInsets.all(10),
+            alignment: Alignment.center,
+            child: Icon(Icons.ballot_sharp, color: Colors.blueAccent),
+          ),
         );
       },
     );

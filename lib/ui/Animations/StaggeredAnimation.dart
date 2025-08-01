@@ -2,7 +2,9 @@ import 'package:eason_nebula/ui/Base/EasonBasePage.dart';
 import 'package:flutter/material.dart';
 
 class StaggeredAnimation extends EasonBasePage {
-  const StaggeredAnimation({Key? key}) : super(key: key);
+  final String tag;
+
+  const StaggeredAnimation({Key? key, required this.tag}) : super(key: key);
 
   @override
   String get title => 'StaggeredAnimation';
@@ -62,6 +64,9 @@ class _StaggeredAnimationState extends BasePageState<StaggeredAnimation>
         ).animate(_animation)..addListener(() {
           setState(() {});
         });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _startAnimation();
+    });
   }
 
   // 控制动画的播放
@@ -88,15 +93,30 @@ class _StaggeredAnimationState extends BasePageState<StaggeredAnimation>
     return Center(
       child: Column(
         children: [
-          ElevatedButton(onPressed: _startAnimation, child: const Text('开始动画')),
+          SizedBox(height: 10),
+          // 使用Row包裹Hero和ElevatedButton，并添加间距
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Hero(
+                tag: widget.tag,
+                child: Icon(Icons.straighten, color: Colors.teal, size: 60),
+              ),
+              SizedBox(width: 10),
+              ElevatedButton(
+                onPressed: _startAnimation,
+                child: const Text('开始动画'),
+              ),
+            ],
+          ),
           // 页面组件可借助Animation效果值进行变换
           Container(
             width: 300,
-            height: 300,
+            height: 600,
             alignment: Alignment.bottomCenter,
             child: SingleChildScrollView(
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Opacity(
                     opacity: _opacityAnimation?.value ?? 1.0,
@@ -121,14 +141,18 @@ class _StaggeredAnimationState extends BasePageState<StaggeredAnimation>
                     ),
                   ),
                   SizedBox(height: 20),
-                  SlideTransition(
-                    position:
-                        _slideAnimation ?? AlwaysStoppedAnimation(Offset.zero),
-                    child: Container(
-                      width: 100,
-                      height: 100,
-                      color: Colors.orange,
-                      child: const Center(child: Text('滑动动画')),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: SlideTransition(
+                      position:
+                          _slideAnimation ??
+                          AlwaysStoppedAnimation(Offset.zero),
+                      child: Container(
+                        width: 100,
+                        height: 100,
+                        color: Colors.orange,
+                        child: const Center(child: Text('滑动动画')),
+                      ),
                     ),
                   ),
                   SizedBox(height: 20),
@@ -145,7 +169,12 @@ class _StaggeredAnimationState extends BasePageState<StaggeredAnimation>
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(color: Colors.white, width: 2),
                         ),
-                        child: const Center(child: Text('尺寸动画')),
+                        child: const Center(
+                          child: Text(
+                            '尺寸动画',
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
                       );
                     },
                   ),
