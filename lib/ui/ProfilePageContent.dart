@@ -1,3 +1,4 @@
+import 'package:eason_nebula/ui/Model/PersonalModel.dart';
 import 'package:eason_nebula/utils/EasonAppBar.dart';
 import 'package:flutter/material.dart';
 import 'dart:math'; // 添加此导入
@@ -5,6 +6,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'Setting/SettingPage.dart';
 import 'CitySelectedPage.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class ProfilePageContent extends StatefulWidget {
   @override
@@ -96,12 +98,16 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
                       child: Icon(Icons.person, color: Colors.white, size: 54),
                     ),
                     SizedBox(height: 12),
-                    Text(
-                      'Eason',
-                      style: TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                      ),
+                    ScopedModelDescendant<Personalmodel>(
+                      builder: (context, child, model) {
+                        return Text(
+                          model.name,
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        );
+                      },
                     ),
                     SizedBox(height: 4),
                     Container(

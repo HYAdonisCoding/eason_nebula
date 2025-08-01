@@ -1,5 +1,6 @@
 import 'package:eason_nebula/ui/HomePage.dart';
 import 'package:eason_nebula/ui/LoginPage.dart';
+import 'package:eason_nebula/ui/Model/PersonalModel.dart';
 import 'package:eason_nebula/ui/PersonalInfoInput.dart';
 import 'package:eason_nebula/ui/AboutPage.dart';
 import 'package:eason_nebula/ui/CarPage.dart';
@@ -11,6 +12,7 @@ import 'package:eason_nebula/utils/EasonGlobal.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
@@ -46,19 +48,24 @@ void main() async {
       WebViewPlatform.instance = WebKitWebViewPlatform();
     }
   }
+  final model = Personalmodel();
+  await model.loadFromLocal(); // 读取本地数据
 
   runApp(
-    EasyLocalization(
-      supportedLocales: const [
-        Locale('zh', 'CN'),
-        Locale('en', 'US'),
-        Locale('zh', 'Hant'),
-        Locale('fr', 'FR'),
-        Locale('ko', 'KR'),
-      ],
-      path: 'lib/assets/translations',
-      fallbackLocale: const Locale('zh', 'CN'),
-      child: const MyAppRoot(),
+    ScopedModel<Personalmodel>(
+      model: Personalmodel(),
+      child: EasyLocalization(
+        supportedLocales: const [
+          Locale('zh', 'CN'),
+          Locale('en', 'US'),
+          Locale('zh', 'Hant'),
+          Locale('fr', 'FR'),
+          Locale('ko', 'KR'),
+        ],
+        path: 'lib/assets/translations',
+        fallbackLocale: const Locale('zh', 'CN'),
+        child: const MyAppRoot(),
+      ),
     ),
   );
 }
