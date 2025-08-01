@@ -12,18 +12,25 @@ class EasonToolBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final double statusBarHeight = MediaQuery.of(context).padding.top;
+    final bool isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Container(
       height: statusBarHeight + 56, // 自定义 toolbar 高度
       padding: EdgeInsets.only(top: statusBarHeight, left: 16, right: 16),
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors: [Colors.blue.shade800, Colors.blueAccent, Colors.cyan],
+          colors: isDark
+              ? [Colors.grey.shade900, Colors.grey.shade800, Colors.grey.shade700]
+              : [Colors.blue.shade800, Colors.blueAccent, Colors.cyan],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
         boxShadow: [
-          BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 2)),
+          BoxShadow(
+            color: isDark ? Colors.black87 : Colors.black26,
+            blurRadius: 4,
+            offset: Offset(0, 2),
+          ),
         ],
       ),
       child: Row(
@@ -33,7 +40,7 @@ class EasonToolBar extends StatelessWidget {
             onTap: () {
               if (onTap != null) onTap!(0);
             },
-            child: Icon(icons[0], size: 28, color: Colors.white),
+            child: Icon(icons[0], size: 28, color: isDark ? Colors.grey[300] : Colors.white),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -41,12 +48,12 @@ class EasonToolBar extends StatelessWidget {
               height: 36,
               padding: const EdgeInsets.symmetric(horizontal: 12),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.15),
+                color: isDark ? Colors.white12 : Colors.white.withOpacity(0.15),
                 borderRadius: BorderRadius.circular(6),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.search, size: 18, color: Colors.white70),
+                  Icon(Icons.search, size: 18, color: isDark ? Colors.white54 : Colors.white70),
                   const SizedBox(width: 6),
                   Expanded(
                     child: GestureDetector(
@@ -58,8 +65,8 @@ class EasonToolBar extends StatelessWidget {
                       },
                       child: Text(
                         '搜索',
-                        style: const TextStyle(
-                          color: Colors.white70,
+                        style: TextStyle(
+                          color: isDark ? Colors.white54 : Colors.white70,
                           fontSize: 16,
                         ),
                       ),
@@ -75,7 +82,7 @@ class EasonToolBar extends StatelessWidget {
             onTap: () {
               if (onTap != null) onTap!(1);
             },
-            child: Icon(icons[1], size: 28, color: Colors.white),
+            child: Icon(icons[1], size: 28, color: isDark ? Colors.grey[300] : Colors.white),
           ),
         ],
       ),

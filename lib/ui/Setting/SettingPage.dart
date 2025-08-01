@@ -1,6 +1,6 @@
+import 'package:eason_nebula/ui/Setting/SettingThemePage.dart';
+import 'package:eason_nebula/utils/global_theme_controller.dart';
 import 'package:flutter/material.dart';
-
-import '../utils/EasonAppBar.dart';
 import 'package:eason_nebula/ui/Base/EasonBasePage.dart';
 
 class SettingPage extends EasonBasePage {
@@ -44,8 +44,25 @@ class _SettingPageState extends BasePageState<SettingPage> {
           icon: Icons.palette,
           iconColor: Colors.purple,
           title: '主题风格',
-          subtitle: '深色/浅色/跟随系统',
-          onTap: () {},
+          // subtitle: 根据当前主题状态动态显示
+          subtitle: () {
+            final mode = themeModeNotifier.value;
+            switch (mode) {
+              case ThemeMode.light:
+                return '浅色模式';
+              case ThemeMode.dark:
+                return '深色模式';
+              case ThemeMode.system:
+              default:
+                return '跟随系统';
+            }
+          }(),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => SettingThemePage()),
+            );
+          },
         ),
         _SettingTile(
           icon: Icons.notifications,

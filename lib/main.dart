@@ -17,9 +17,24 @@ import 'package:flutter/foundation.dart';
 
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
-void main() {
+import 'package:eason_nebula/utils/global_theme_controller.dart';
+import 'package:flutter/services.dart';
+
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // iOS 端初始化
+
+  // 设置系统导航栏样式（可选）
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.black,
+      systemNavigationBarIconBrightness: Brightness.light,
+    ),
+  );
+
+  // 加载用户上次选择的主题模式
+  await loadThemeModeFromPrefs();
+
+  // 初始化 WebView 平台
   if (WebViewPlatform.instance == null) {
     if (defaultTargetPlatform == TargetPlatform.android) {
       WebViewPlatform.instance = AndroidWebViewPlatform();
@@ -27,23 +42,57 @@ void main() {
       WebViewPlatform.instance = WebKitWebViewPlatform();
     }
   }
+
+  // 启动应用
   runApp(
-    MaterialApp(
-      home: HomePage(),
-      title: 'Eason Nebula',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      initialRoute: '/',
-      navigatorKey: navigatorKey,
-      // 注册路由
-      routes: {
-        '/login': (context) => LoginPage(),
-        '/personalInfoInput': (context) => PersonalInfoInputPage(),
-        '/aboutPage': (context) => AboutPage(),
-        '/CarPage': (context) => CarPage(),
-        '/SimpleTablePage': (context) => SimpleTablePage(),
-        '/PaginatedDataTablePage': (context) => PaginatedDataTablePage(),
-        '/DataTablePage': (context) => DataTablePage(),
-        '/CarDataTablePage': (context) => CarDataTablePage(),
+    ValueListenableBuilder<ThemeMode>(
+      valueListenable: themeModeNotifier,
+      builder: (context, mode, _) {
+        return MaterialApp(
+          home: HomePage(),
+          title: 'Eason Nebula',
+          themeMode: mode,
+          theme: ThemeData(
+            brightness: Brightness.light,
+            primarySwatch: Colors.blue,
+            fontFamily: 'Courier New',
+            primaryColor: Colors.lightBlue[800],
+            scaffoldBackgroundColor: Colors.grey[100],
+            colorScheme: ColorScheme.light(
+              primary: Colors.lightBlue[800]!,
+              secondary: Colors.lightBlue[600]!,
+              background: Colors.grey[100],
+            ),
+          ),
+          darkTheme: ThemeData(
+            brightness: Brightness.dark,
+            scaffoldBackgroundColor: Colors.black,
+            appBarTheme: AppBarTheme(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+            ),
+            iconTheme: IconThemeData(color: Colors.white70),
+            textTheme: Typography.whiteCupertino,
+            colorScheme: const ColorScheme.dark(
+              surface: Color(0xFF121212),
+              background: Colors.black,
+              primary: Colors.white,
+              secondary: Colors.grey,
+            ),
+          ),
+          initialRoute: '/',
+          navigatorKey: navigatorKey,
+          routes: {
+            '/login': (context) => LoginPage(),
+            '/personalInfoInput': (context) => PersonalInfoInputPage(),
+            '/aboutPage': (context) => AboutPage(),
+            '/CarPage': (context) => CarPage(),
+            '/SimpleTablePage': (context) => SimpleTablePage(),
+            '/PaginatedDataTablePage': (context) => PaginatedDataTablePage(),
+            '/DataTablePage': (context) => DataTablePage(),
+            '/CarDataTablePage': (context) => CarDataTablePage(),
+          },
+        );
       },
     ),
   ); // This is the entry point of the application.

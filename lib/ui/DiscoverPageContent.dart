@@ -149,13 +149,13 @@ class _DiscoverPageContentState extends BasePageState<DiscoverPageContent> {
     {"title": "话题四", "icon": Icons.favorite, "color": Colors.pinkAccent},
   ];
 
-  Widget _buildRecommendationSection() {
+  Widget _buildRecommendationSection(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           '为你推荐',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 12),
         GridView.count(
@@ -176,6 +176,7 @@ class _DiscoverPageContentState extends BasePageState<DiscoverPageContent> {
 
   @override
   Widget buildContent(BuildContext context) {
+    final theme = Theme.of(context);
     return Column(
       children: [
         EasonToolBar(
@@ -185,7 +186,6 @@ class _DiscoverPageContentState extends BasePageState<DiscoverPageContent> {
             debugPrint('点击了第 $index 个图标');
             if (index == 0) {
               // 打开侧边栏
-
               PopupUtils.showCustomPopup(
                 context,
                 anchorKey: _menuKey,
@@ -222,33 +222,43 @@ class _DiscoverPageContentState extends BasePageState<DiscoverPageContent> {
             onRefresh: _loadRedNote,
             child: ListView(
               padding: EdgeInsets.all(24),
+              // background color transparent or theme's scaffoldBackgroundColor by default
               children: [
                 Card(
                   elevation: 3,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(16),
                   ),
+                  color: theme.cardColor,
                   child: ListTile(
                     leading: Icon(
                       Icons.search,
-                      color: Colors.deepPurple,
+                      color: theme.brightness == Brightness.dark
+                          ? Colors.deepPurpleAccent.shade100
+                          : Colors.deepPurple,
                       size: 32,
                     ),
-                    title: Text('全网热搜'),
-                    subtitle: Text('看看大家都在关注什么'),
-                    trailing: Icon(Icons.arrow_forward_ios, size: 18),
+                    title: Text(
+                      '全网热搜',
+                      style: theme.textTheme.titleMedium,
+                    ),
+                    subtitle: Text(
+                      '看看大家都在关注什么',
+                      style: theme.textTheme.bodyMedium,
+                    ),
+                    trailing: Icon(Icons.arrow_forward_ios, size: 18, color: theme.iconTheme.color),
                     onTap: () {},
                   ),
                 ),
                 SizedBox(height: 24),
                 Text(
                   '热门话题',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  style: theme.textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 12),
                 _HotTopicGridSection(hotTopics: hotTopics),
                 SizedBox(height: 32),
-                _buildRecommendationSection(),
+                _buildRecommendationSection(context),
               ],
             ),
           ),
@@ -265,6 +275,7 @@ class DiscoverGridItemCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final note = item['note_card'];
     final title = note['display_title'] ?? '';
     final author = note['user']['nickname'] ?? '';
@@ -281,17 +292,14 @@ class DiscoverGridItemCard extends StatelessWidget {
       child: Material(
         borderRadius: BorderRadius.circular(16),
         clipBehavior: Clip.antiAlias,
-        color: Colors.white,
+        color: theme.cardColor,
         child: InkWell(
           onTap: () {
             print('点击了：$title');
-            // 这里可以添加跳转到详情页的逻辑
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (_) {
-                  // 传递 item 到 CommentPage
-                  // 这里可以根据实际情况传递 item 的数据
                   return DetailNotePage(item: item);
                 },
               ),
@@ -307,7 +315,9 @@ class DiscoverGridItemCard extends StatelessWidget {
                       topLeft: Radius.circular(16),
                       topRight: Radius.circular(16),
                     ),
-                    color: Colors.grey[200],
+                    color: theme.brightness == Brightness.dark
+                        ? Colors.grey[800]
+                        : Colors.grey[200],
                   ),
                   clipBehavior: Clip.antiAlias,
                   child: coverUrl.isNotEmpty && cookie != null
@@ -331,13 +341,21 @@ class DiscoverGridItemCard extends StatelessWidget {
                                   ),
                                 );
                               case LoadState.failed:
-                                return Container(color: Colors.grey[300]);
+                                return Container(
+                                  color: theme.brightness == Brightness.dark
+                                      ? Colors.grey[800]
+                                      : Colors.grey[300],
+                                );
                               case LoadState.completed:
                                 return null;
                             }
                           },
                         )
-                      : Container(color: Colors.grey[300]),
+                      : Container(
+                          color: theme.brightness == Brightness.dark
+                              ? Colors.grey[800]
+                              : Colors.grey[300],
+                        ),
                 ),
               ),
               Padding(
@@ -349,9 +367,10 @@ class DiscoverGridItemCard extends StatelessWidget {
                       title,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
+                      style: theme.textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.bold,
                         fontSize: 13,
+                        color: theme.textTheme.bodyMedium?.color,
                       ),
                     ),
                     SizedBox(height: 4),
@@ -367,9 +386,11 @@ class DiscoverGridItemCard extends StatelessWidget {
                             author,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
+                            style: theme.textTheme.bodySmall?.copyWith(
                               fontSize: 11,
-                              color: Colors.grey[600],
+                              color: theme.brightness == Brightness.dark
+                                  ? Colors.grey[400]
+                                  : Colors.grey[600],
                             ),
                           ),
                         ),
@@ -403,6 +424,7 @@ class _HotTopicGridSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final double screenWidth = MediaQuery.of(context).size.width;
     final double horizontalPadding = 48; // 24*2
     final double gridSpacing = 24; // 12*2
@@ -413,7 +435,9 @@ class _HotTopicGridSection extends StatelessWidget {
     final double itemHeight = itemWidth / 3.4;
     final double mainAxisSpacing = 8;
     return Container(
-      color: Colors.greenAccent.withOpacity(0.1),
+      color: theme.brightness == Brightness.dark
+          ? Colors.transparent
+          : Colors.greenAccent.withOpacity(0.1),
       height: _calculateGridHeight(
         hotTopics.length,
         crossAxisCount,
@@ -429,13 +453,16 @@ class _HotTopicGridSection extends StatelessWidget {
         mainAxisSpacing: 8,
         childAspectRatio: 3.4,
         children: hotTopics.map((topic) {
+          final Color topicColor = topic['color'] as Color;
+          final Color iconColor = theme.brightness == Brightness.dark
+              ? topicColor.withOpacity(0.8)
+              : topicColor;
           return InkWell(
             onTap: () {
               final jumpRoute = topic['jump'] as String?;
               if (jumpRoute != null && jumpRoute.isNotEmpty) {
                 Navigator.pushNamed(context, '/$jumpRoute');
               } else {
-                // 如果没有指定跳转路由，跳转到TemplePage
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => TemplePage()),
@@ -444,7 +471,9 @@ class _HotTopicGridSection extends StatelessWidget {
             },
             child: Container(
               decoration: BoxDecoration(
-                color: (topic['color'] as Color).withOpacity(0.08),
+                color: theme.brightness == Brightness.dark
+                    ? Colors.transparent
+                    : topicColor.withOpacity(0.08),
                 borderRadius: BorderRadius.circular(20),
               ),
               padding: EdgeInsets.symmetric(horizontal: 6),
@@ -453,16 +482,16 @@ class _HotTopicGridSection extends StatelessWidget {
                 children: [
                   Icon(
                     topic['icon'] as IconData,
-                    color: topic['color'] as Color,
+                    color: iconColor,
                     size: 16,
                   ),
                   SizedBox(width: 4),
                   Flexible(
                     child: Text(
                       topic['title'] as String,
-                      style: TextStyle(
+                      style: theme.textTheme.bodyMedium?.copyWith(
                         fontSize: 13,
-                        color: topic['color'] as Color,
+                        color: iconColor,
                         fontWeight: FontWeight.w500,
                       ),
                       overflow: TextOverflow.ellipsis,

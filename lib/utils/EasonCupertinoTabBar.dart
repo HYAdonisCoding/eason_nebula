@@ -17,8 +17,8 @@ class EasonCupertinoTabBar extends StatelessWidget {
   final List<EasonCupertinoTabBarItem> items;
   final int currentIndex;
   final ValueChanged<int> onTap;
-  final Color activeColor;
-  final Color inactiveColor;
+  final Color? activeColor;
+  final Color? inactiveColor;
   final double height;
   final double indicatorHeight;
   final List<Color>? indicatorGradient;
@@ -28,8 +28,8 @@ class EasonCupertinoTabBar extends StatelessWidget {
     required this.items,
     required this.currentIndex,
     required this.onTap,
-    this.activeColor = Colors.blueAccent,
-    this.inactiveColor = Colors.grey,
+    this.activeColor,
+    this.inactiveColor,
     this.height = 56,
     this.indicatorHeight = 4,
     this.indicatorGradient,
@@ -37,13 +37,27 @@ class EasonCupertinoTabBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     final double width = MediaQuery.of(context).size.width;
+
+    final Color resolvedActiveColor = activeColor ??
+        (isDark ? Colors.tealAccent.shade200 : Colors.blueAccent);
+    final Color resolvedInactiveColor = inactiveColor ??
+        (isDark ? Colors.grey.shade400 : Colors.grey);
+
+    final List<Color> resolvedIndicatorGradient = indicatorGradient ??
+        (isDark
+            ? [Colors.tealAccent.shade200, Colors.cyanAccent.shade100]
+            : [Colors.blueAccent, Colors.purpleAccent, Colors.cyan]);
+
     return ClipRRect(
       borderRadius: BorderRadius.vertical(top: Radius.circular(22)),
       child: BackdropFilter(
         filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
         child: Container(
-          color: Colors.white.withOpacity(0.82),
+          color: isDark
+              ? Colors.black.withOpacity(0.7)
+              : Colors.white.withOpacity(0.82),
           child: SizedBox(
             height: height + indicatorHeight,
             child: Stack(
@@ -61,7 +75,7 @@ class EasonCupertinoTabBar extends StatelessWidget {
                           padding: EdgeInsets.symmetric(vertical: 4),
                           decoration: BoxDecoration(
                             color: selected
-                                ? activeColor.withOpacity(0.10)
+                                ? resolvedActiveColor.withOpacity(0.10)
                                 : Colors.transparent,
                             borderRadius: BorderRadius.circular(18),
                           ),
@@ -73,8 +87,8 @@ class EasonCupertinoTabBar extends StatelessWidget {
                                   Icon(
                                     items[index].icon,
                                     color: selected
-                                        ? activeColor
-                                        : inactiveColor,
+                                        ? resolvedActiveColor
+                                        : resolvedInactiveColor,
                                     size: 24,
                                   ),
                               SizedBox(height: 2),
@@ -82,8 +96,8 @@ class EasonCupertinoTabBar extends StatelessWidget {
                                 duration: Duration(milliseconds: 300),
                                 style: TextStyle(
                                   color: selected
-                                      ? activeColor
-                                      : inactiveColor,
+                                      ? resolvedActiveColor
+                                      : resolvedInactiveColor,
                                   fontWeight: selected
                                       ? FontWeight.bold
                                       : FontWeight.normal,
@@ -92,7 +106,7 @@ class EasonCupertinoTabBar extends StatelessWidget {
                                   shadows: selected
                                       ? [
                                           Shadow(
-                                            color: activeColor.withOpacity(0.18),
+                                            color: resolvedActiveColor.withOpacity(0.18),
                                             blurRadius: 8,
                                             offset: Offset(0, 2),
                                           ),
@@ -125,13 +139,11 @@ class EasonCupertinoTabBar extends StatelessWidget {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(8),
                       gradient: LinearGradient(
-                        colors: indicatorGradient ??
-                            [Colors.blueAccent, Colors.purpleAccent, Colors.cyan],
+                        colors: resolvedIndicatorGradient,
                       ),
                       boxShadow: [
                         BoxShadow(
-                          color: (indicatorGradient?.first ?? activeColor)
-                              .withOpacity(0.18),
+                          color: resolvedIndicatorGradient.first.withOpacity(0.18),
                           blurRadius: 8,
                           offset: Offset(0, 2),
                         ),

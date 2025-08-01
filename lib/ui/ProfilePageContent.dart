@@ -2,7 +2,7 @@ import 'package:eason_nebula/utils/EasonAppBar.dart';
 import 'package:flutter/material.dart';
 import 'dart:math'; // 添加此导入
 import 'package:shared_preferences/shared_preferences.dart';
-import 'SettingPage.dart';
+import 'Setting/SettingPage.dart';
 import 'CitySelectedPage.dart';
 
 class ProfilePageContent extends StatefulWidget {

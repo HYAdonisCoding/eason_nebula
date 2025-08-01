@@ -72,12 +72,21 @@ class EasonAppBar extends StatelessWidget implements PreferredSizeWidget {
   final GlobalKey _menuKey = GlobalKey();
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final gradient = gradientColors ??
+        (isDark
+            ? [Colors.grey.shade900, Colors.grey.shade800, Colors.grey.shade700]
+            : [Colors.blue.shade800, Colors.blueAccent, Colors.cyan]);
+
+    final textColor = Colors.white;
+    final iconColor = Colors.white;
+
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
-          colors:
-              gradientColors ??
-              [Colors.blue.shade800, Colors.blueAccent, Colors.cyan],
+          colors: gradient,
         ),
         boxShadow: [
           BoxShadow(
@@ -100,7 +109,7 @@ class EasonAppBar extends StatelessWidget implements PreferredSizeWidget {
                   child: IconButton(
                     icon: Icon(
                       Icons.arrow_back_ios_new_rounded,
-                      color: Colors.white,
+                      color: iconColor,
                       size: 24,
                     ),
                     onPressed: onBack ?? () => Navigator.of(context).maybePop(),
@@ -113,10 +122,10 @@ class EasonAppBar extends StatelessWidget implements PreferredSizeWidget {
                   children: leadingMenuItems!.map((item) {
                     return IconButton(
                       icon: item.icon != null
-                          ? Icon(item.icon, color: item.iconColor, size: 22)
+                          ? Icon(item.icon, color: item.iconColor ?? iconColor, size: 22)
                           : Text(
                               item.title,
-                              style: TextStyle(color: Colors.white),
+                              style: TextStyle(color: textColor),
                             ),
                       onPressed: item.onTap,
                       splashRadius: 22,
@@ -130,8 +139,8 @@ class EasonAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: Center(
                   child: Text(
                     title,
-                    style: const TextStyle(
-                      color: Colors.white,
+                    style: TextStyle(
+                      color: textColor,
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1.2,
@@ -155,9 +164,9 @@ class EasonAppBar extends StatelessWidget implements PreferredSizeWidget {
                 width: 56,
                 child: IconButton(
                   key: _menuKey,
-                  icon: const Icon(
+                  icon: Icon(
                     Icons.more_horiz,
-                    color: Colors.white,
+                    color: iconColor,
                     size: 26,
                   ),
                   onPressed: () => showCustomPopup(context),

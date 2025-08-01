@@ -13,6 +13,10 @@ class PopupUtils {
       _popupEntry!.remove();
       _popupEntry = null;
     }
+    final theme = Theme.of(context);
+    final surfaceColor = theme.colorScheme.surface;
+    final shadowColor = theme.shadowColor;
+
     final overlay = Overlay.of(context).context.findRenderObject() as RenderBox;
     final renderBox = anchorKey.currentContext!.findRenderObject() as RenderBox;
     final offset = renderBox.localToGlobal(Offset.zero, ancestor: overlay);
@@ -56,16 +60,19 @@ class PopupUtils {
                       left: arrowLeft,
                       child: CustomPaint(
                         size: const Size(14, 7),
-                        painter: _TrianglePainter(color: Colors.white),
+                        painter: _TrianglePainter(color: surfaceColor),
                       ),
                     ),
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.white,
+                        color: surfaceColor,
                         borderRadius: BorderRadius.circular(12),
+                        border: theme.brightness == Brightness.dark
+                            ? Border.all(color: theme.dividerColor.withOpacity(0.3))
+                            : null,
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.1),
+                            color: shadowColor.withOpacity(0.1),
                             blurRadius: 8,
                             offset: const Offset(0, 2),
                           ),

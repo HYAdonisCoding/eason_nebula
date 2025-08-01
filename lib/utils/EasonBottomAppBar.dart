@@ -50,6 +50,11 @@ class _EasonBottomAppBarState extends State<EasonBottomAppBar>
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final gradientColors = isDark
+        ? [Color(0xFF311B92), Color(0xFF00B8D4)] // 酷炫紫蓝
+        : [Colors.purpleAccent, Colors.blueAccent, Colors.cyan];
+
     final items =
         widget.leftItems ??
         [
@@ -82,10 +87,12 @@ class _EasonBottomAppBarState extends State<EasonBottomAppBar>
             top: overlap,
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: isDark ? Color(0xFF000000) : Theme.of(context).colorScheme.surface,
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black12,
+                    color: isDark
+                        ? Colors.black54
+                        : Colors.purpleAccent.withOpacity(0.3),
                     blurRadius: 8,
                     offset: Offset(0, -2),
                   ),
@@ -112,7 +119,8 @@ class _EasonBottomAppBarState extends State<EasonBottomAppBar>
                           onTap: item.onTap,
                           child: Icon(
                             item.icon,
-                            color: item.iconColor ?? Colors.grey[800],
+                            color: item.iconColor ??
+                                (isDark ? Color(0xFFEEEEEE) : Theme.of(context).iconTheme.color),
                             size: 28,
                           ),
                         ),
@@ -145,16 +153,13 @@ class _EasonBottomAppBarState extends State<EasonBottomAppBar>
                       height: btnSize,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          colors: [
-                            Colors.purpleAccent,
-                            Colors.blueAccent,
-                            Colors.cyan,
-                          ],
-                        ),
+                        color: isDark ? Color(0xFF1A1A1A) : null,
+                        gradient: isDark ? null : LinearGradient(colors: gradientColors),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.purpleAccent.withOpacity(0.3),
+                            color: isDark
+                                ? Colors.black54
+                                : Colors.purpleAccent.withOpacity(0.3),
                             blurRadius: 10,
                             offset: Offset(0, 4),
                           ),

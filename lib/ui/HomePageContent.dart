@@ -5,6 +5,7 @@ import 'package:eason_nebula/ui/GesturePage.dart';
 import 'package:eason_nebula/ui/HotPhonePage.dart';
 import 'package:eason_nebula/ui/RankListenPage.dart';
 import 'package:eason_nebula/ui/ScanCodePage.dart';
+import 'package:eason_nebula/ui/Setting/SettingThemePage.dart';
 import 'package:eason_nebula/ui/WalletPage.dart';
 import 'package:eason_nebula/ui/WebSocketPage.dart';
 import 'package:eason_nebula/utils/EasonAppBar.dart';
@@ -15,7 +16,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:url_launcher/url_launcher.dart';
 import '../utils/EasonMessenger.dart';
-import 'SettingPage.dart';
+import 'Setting/SettingPage.dart';
 import 'HotDetailPage.dart';
 import 'dart:math';
 import 'package:eason_nebula/utils/EasonGlobal.dart';
@@ -77,7 +78,7 @@ class _HomePageContentState extends State<HomePageContent> {
         EasonAppBar(title: '首页', menuItems: menuItems, showBack: false),
         Expanded(
           child: ListView(
-            padding: EdgeInsets.all(24),
+            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
             children: [
               _buildWelcomeCard(),
               SizedBox(height: 24),
@@ -98,11 +99,14 @@ class _HomePageContentState extends State<HomePageContent> {
       children: [
         Text(
           '欢迎回来！',
-          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 16),
         Card(
           elevation: 4,
+          color: Theme.of(context).cardColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -111,8 +115,14 @@ class _HomePageContentState extends State<HomePageContent> {
               backgroundColor: Colors.blueAccent,
               child: Icon(Icons.person, color: Colors.white),
             ),
-            title: Text('你好，Eason'),
-            subtitle: Text('今天也要元气满满哦！'),
+            title: Text(
+              '你好，Eason',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            subtitle: Text(
+              '今天也要元气满满哦！',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
             trailing: Icon(Icons.arrow_forward_ios, size: 18),
             onTap: () {},
           ),
@@ -293,7 +303,16 @@ class _HomePageContentState extends State<HomePageContent> {
         'onTap': () => debugPrint('通知'),
       },
       {'icon': Icons.language, 'label': '语言', 'onTap': () => debugPrint('语言')},
-      {'icon': Icons.palette, 'label': '主题', 'onTap': () => debugPrint('主题')},
+      {
+        'icon': Icons.palette,
+        'label': '主题',
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => SettingThemePage()),
+          );
+        },
+      },
     ];
 
     return Column(
@@ -301,7 +320,10 @@ class _HomePageContentState extends State<HomePageContent> {
       children: [
         Text(
           '快捷功能',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+            fontSize: 18,
+          ),
         ),
         SizedBox(height: 12),
         Wrap(
@@ -330,20 +352,12 @@ class _HomePageContentState extends State<HomePageContent> {
       children: [
         Text(
           '热搜榜',
-          style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+          style: Theme.of(
+            context,
+          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
         ),
         SizedBox(height: 16),
         if (_hotList.isEmpty)
-          /*************  ✨ Windsurf Command ⭐  *************/
-          /// Builds the top card widget displaying the most popular hot search item.
-          ///
-          /// The card has a deep purple background with a high elevation to stand out,
-          /// and it includes an icon, title, and heat score of the item.
-          /// Tapping the card will launch a URL associated with the item.
-          ///
-          /// - Parameter item: A dynamic object containing details of the hot search item,
-          ///   with expected fields 'card_title' for the title and 'heat_score' for the heat score.
-          /*******  70e595b2-991d-4e2b-bbf0-8cf8fccb431c  *******/
           Center(child: CircularProgressIndicator())
         else ...[
           _buildTopCard(_hotList[0]),
@@ -359,9 +373,19 @@ class _HomePageContentState extends State<HomePageContent> {
   }
 
   Widget _buildTopCard(dynamic item) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgColor = isDark
+        ? Theme.of(context).cardColor
+        : Colors.deepPurple.withOpacity(0.85);
+    final textColor = isDark
+        ? Theme.of(context).textTheme.titleSmall?.color
+        : Colors.white;
+    final subTextColor = isDark
+        ? Theme.of(context).textTheme.bodyMedium?.color?.withOpacity(0.7)
+        : Colors.white70;
     return Card(
       elevation: 8,
-      color: Colors.deepPurple.withOpacity(0.85),
+      color: bgColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: InkWell(
         borderRadius: BorderRadius.circular(20),
@@ -378,8 +402,8 @@ class _HomePageContentState extends State<HomePageContent> {
                   children: [
                     Text(
                       item['card_title'] ?? '',
-                      style: TextStyle(
-                        color: Colors.white,
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: textColor,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                         letterSpacing: 0.5,
@@ -388,12 +412,15 @@ class _HomePageContentState extends State<HomePageContent> {
                     SizedBox(height: 8),
                     Text(
                       '热度：${item['heat_score']}',
-                      style: TextStyle(color: Colors.white70, fontSize: 15),
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: subTextColor,
+                        fontSize: 15,
+                      ),
                     ),
                   ],
                 ),
               ),
-              Icon(Icons.chevron_right, color: Colors.white70),
+              Icon(Icons.chevron_right, color: subTextColor),
             ],
           ),
         ),
@@ -409,6 +436,7 @@ class _HomePageContentState extends State<HomePageContent> {
     ];
     return Card(
       elevation: 4,
+      color: Theme.of(context).cardColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       child: InkWell(
         borderRadius: BorderRadius.circular(14),
@@ -429,8 +457,12 @@ class _HomePageContentState extends State<HomePageContent> {
             item['card_title'] ?? '',
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
-          subtitle: Text('热度：${item['heat_score']}'),
+          subtitle: Text(
+            '热度：${item['heat_score']}',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
           trailing: Icon(Icons.chevron_right),
         ),
       ),
@@ -440,6 +472,7 @@ class _HomePageContentState extends State<HomePageContent> {
   Widget _buildNormalCard(dynamic item) {
     return Card(
       elevation: 2,
+      color: Theme.of(context).cardColor,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
@@ -459,8 +492,12 @@ class _HomePageContentState extends State<HomePageContent> {
             item['card_title'] ?? '',
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
+            style: Theme.of(context).textTheme.titleMedium,
           ),
-          subtitle: Text('热度：${item['heat_score']}'),
+          subtitle: Text(
+            '热度：${item['heat_score']}',
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
           trailing: Icon(Icons.chevron_right),
         ),
       ),
@@ -518,8 +555,11 @@ class _QuickAction extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = _randomLightColor().withOpacity(0.2);
-    final iconColor = _randomIconColor();
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final bgColor = isDark
+        ? Colors.grey[800]
+        : _randomLightColor().withOpacity(0.2);
+    final iconColor = isDark ? Colors.white70 : _randomIconColor();
     return GestureDetector(
       onTap: onTap,
       behavior: HitTestBehavior.opaque,
@@ -530,7 +570,12 @@ class _QuickAction extends StatelessWidget {
             child: Icon(icon, color: iconColor),
           ),
           SizedBox(height: 6),
-          Text(label, style: TextStyle(fontSize: 13)),
+          Text(
+            label,
+            style: Theme.of(
+              context,
+            ).textTheme.bodyMedium?.copyWith(fontSize: 13),
+          ),
         ],
       ),
     );
