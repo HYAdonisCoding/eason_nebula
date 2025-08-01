@@ -1,13 +1,15 @@
+import 'package:eason_nebula/ui/Setting/SettingLocalizationPage.dart';
 import 'package:eason_nebula/ui/Setting/SettingThemePage.dart';
 import 'package:eason_nebula/utils/global_theme_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:eason_nebula/ui/Base/EasonBasePage.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SettingPage extends EasonBasePage {
   const SettingPage({Key? key}) : super(key: key);
 
   @override
-  String get title => '设置';
+  String get title => 'settings'.tr();
 
   @override
   State<SettingPage> createState() => _SettingPageState();
@@ -31,30 +33,30 @@ class _SettingPageState extends BasePageState<SettingPage> {
               child: Icon(Icons.person, color: Colors.white),
             ),
             title: Text('Eason'),
-            subtitle: Text('点击查看个人资料'),
+            subtitle: Text('clickToViewProfile').tr(),
             trailing: Icon(Icons.chevron_right),
             onTap: () {},
           ),
         ),
         SizedBox(height: 24),
         // 通用设置
-        Text('通用', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        Text('general'.tr(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         SizedBox(height: 8),
         _SettingTile(
           icon: Icons.palette,
           iconColor: Colors.purple,
-          title: '主题风格',
+          title: 'themeStyle'.tr(),
           // subtitle: 根据当前主题状态动态显示
           subtitle: () {
             final mode = themeModeNotifier.value;
             switch (mode) {
               case ThemeMode.light:
-                return '浅色模式';
+                return 'lightMode'.tr();
               case ThemeMode.dark:
-                return '深色模式';
+                return 'darkMode'.tr();
               case ThemeMode.system:
               default:
-                return '跟随系统';
+                return 'followSystem'.tr();
             }
           }(),
           onTap: () {
@@ -67,48 +69,61 @@ class _SettingPageState extends BasePageState<SettingPage> {
         _SettingTile(
           icon: Icons.notifications,
           iconColor: Colors.orange,
-          title: '消息通知',
-          subtitle: '推送、声音、振动',
+          title: 'notifications'.tr(),
+          subtitle: 'pushSoundVibrate'.tr(),
           onTap: () {},
         ),
         _SettingTile(
           icon: Icons.language,
           iconColor: Colors.blue,
-          title: '语言',
-          subtitle: '简体中文',
-          onTap: () {},
+          title: 'language'.tr(),
+          subtitle: () {
+            final locale = context.locale;
+            final deviceLocale = context.deviceLocale;
+
+            if (locale == deviceLocale) return 'followSystem'.tr();
+            if (locale.languageCode == 'zh') return 'simplifiedChinese'.tr();
+            if (locale.languageCode == 'en') return 'english'.tr();
+            return locale.toString();
+          }(),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => SettingLocalizationPage()),
+            );
+          },
         ),
         SizedBox(height: 24),
         // 安全设置
-        Text('安全', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        Text('security'.tr(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         SizedBox(height: 8),
         _SettingTile(
           icon: Icons.lock,
           iconColor: Colors.teal,
-          title: '修改密码',
+          title: 'changePassword'.tr(),
           onTap: () {},
         ),
         _SettingTile(
           icon: Icons.fingerprint,
           iconColor: Colors.indigo,
-          title: '指纹/面容解锁',
+          title: 'fingerprintUnlock'.tr(),
           onTap: () {},
         ),
         SizedBox(height: 24),
         // 关于
-        Text('关于', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        Text('about'.tr(), style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         SizedBox(height: 8),
         _SettingTile(
           icon: Icons.info,
           iconColor: Colors.grey,
-          title: '关于我们',
+          title: 'aboutUs'.tr(),
           onTap: () {},
         ),
         _SettingTile(
           icon: Icons.verified,
           iconColor: Colors.green,
-          title: '检查更新',
-          subtitle: '当前已是最新版',
+          title: 'checkUpdate'.tr(),
+          subtitle: 'latestVersion'.tr(),
           onTap: () {},
         ),
         SizedBox(height: 32),
@@ -121,11 +136,11 @@ class _SettingPageState extends BasePageState<SettingPage> {
               padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
             ),
             icon: Icon(Icons.logout),
-            label: Text('退出登录', style: TextStyle(fontSize: 16)),
+            label: Text('logout'.tr(), style: TextStyle(fontSize: 16)),
             onPressed: () {
               ScaffoldMessenger.of(
                 context,
-              ).showSnackBar(SnackBar(content: Text('已退出登录')));
+              ).showSnackBar(SnackBar(content: Text('loggedOut'.tr())));
             },
           ),
         ),

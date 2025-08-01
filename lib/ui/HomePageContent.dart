@@ -5,12 +5,14 @@ import 'package:eason_nebula/ui/GesturePage.dart';
 import 'package:eason_nebula/ui/HotPhonePage.dart';
 import 'package:eason_nebula/ui/RankListenPage.dart';
 import 'package:eason_nebula/ui/ScanCodePage.dart';
+import 'package:eason_nebula/ui/Setting/SettingLocalizationPage.dart';
 import 'package:eason_nebula/ui/Setting/SettingThemePage.dart';
 import 'package:eason_nebula/ui/WalletPage.dart';
 import 'package:eason_nebula/ui/WebSocketPage.dart';
 import 'package:eason_nebula/utils/EasonAppBar.dart';
 import 'package:eason_nebula/utils/EasonFaceAuth.dart';
 import 'package:eason_nebula/utils/LoadingDialog.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
@@ -98,7 +100,7 @@ class _HomePageContentState extends State<HomePageContent> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '欢迎回来！',
+          'welcomeBack'.tr(),
           style: Theme.of(
             context,
           ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
@@ -116,11 +118,11 @@ class _HomePageContentState extends State<HomePageContent> {
               child: Icon(Icons.person, color: Colors.white),
             ),
             title: Text(
-              '你好，Eason',
+              'greeting'.tr(),
               style: Theme.of(context).textTheme.titleMedium,
             ),
             subtitle: Text(
-              '今天也要元气满满哦！',
+              "todayHello".tr(),
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             trailing: Icon(Icons.arrow_forward_ios, size: 18),
@@ -137,7 +139,7 @@ class _HomePageContentState extends State<HomePageContent> {
     final quickActions = [
       {
         'icon': Icons.qr_code_scanner,
-        'label': '扫一扫',
+        'label': 'scan'.tr(),
         'onTap': () {
           debugPrint('扫一扫');
           Navigator.push(
@@ -148,7 +150,7 @@ class _HomePageContentState extends State<HomePageContent> {
       },
       {
         'icon': Icons.radio,
-        'label': '排行榜',
+        'label': 'ranking'.tr(),
         'onTap': () {
           Navigator.push(
             context,
@@ -158,7 +160,7 @@ class _HomePageContentState extends State<HomePageContent> {
       },
       {
         'icon': Icons.message,
-        'label': '消息',
+        'label': 'messages'.tr(),
         'onTap': () {
           debugPrint('消息');
           // 这里可以添加跳转到消息页面的逻辑
@@ -170,7 +172,7 @@ class _HomePageContentState extends State<HomePageContent> {
       },
       {
         'icon': Icons.settings,
-        'label': '设置',
+        'label': 'settings'.tr(),
         'onTap': () {
           Navigator.push(
             context,
@@ -180,7 +182,7 @@ class _HomePageContentState extends State<HomePageContent> {
       },
       {
         'icon': Icons.file_copy,
-        'label': '文件',
+        'label': 'files'.tr(),
         'onTap': () {
           debugPrint('文件');
           Navigator.push(
@@ -191,7 +193,7 @@ class _HomePageContentState extends State<HomePageContent> {
       },
       {
         'icon': Icons.phone_iphone,
-        'label': '推荐',
+        'label': 'recommend'.tr(),
         'onTap': () {
           debugPrint('推荐');
           Navigator.push(
@@ -202,7 +204,7 @@ class _HomePageContentState extends State<HomePageContent> {
       },
       {
         'icon': Icons.camera,
-        'label': '拍照',
+        'label': 'camera'.tr(),
         'onTap': () {
           debugPrint('拍照');
           // 这里可以添加拍照逻辑
@@ -210,7 +212,7 @@ class _HomePageContentState extends State<HomePageContent> {
       },
       {
         'icon': Icons.gesture,
-        'label': '手势',
+        'label': 'gesture'.tr(),
         'onTap': () {
           debugPrint('手势');
           Navigator.push(
@@ -221,7 +223,7 @@ class _HomePageContentState extends State<HomePageContent> {
       },
       {
         'icon': Icons.dataset_linked_outlined,
-        'label': '数据库',
+        'label': 'database'.tr(),
         'onTap': () {
           debugPrint('数据库');
           Navigator.push(
@@ -232,7 +234,7 @@ class _HomePageContentState extends State<HomePageContent> {
       },
       {
         'icon': Icons.wallet,
-        'label': '钱包',
+        'label': 'wallet'.tr(),
         'onTap': () async {
           debugPrint('钱包');
           LoadingDialog.show(
@@ -255,7 +257,7 @@ class _HomePageContentState extends State<HomePageContent> {
       },
       {
         'icon': Icons.animation,
-        'label': '动画',
+        'label': 'animation'.tr(),
         'onTap': () {
           debugPrint('动画');
           Navigator.push(
@@ -266,7 +268,7 @@ class _HomePageContentState extends State<HomePageContent> {
       },
       {
         'icon': Icons.share,
-        'label': '分享',
+        'label': 'share'.tr(),
         'onTap': () async {
           debugPrint('分享');
           LoadingDialog.show(
@@ -281,7 +283,7 @@ class _HomePageContentState extends State<HomePageContent> {
       },
       {
         'icon': Icons.help,
-        'label': '帮助',
+        'label': 'help'.tr(),
         'onTap': () async {
           debugPrint('帮助');
           LoadingDialog.show(
@@ -294,18 +296,39 @@ class _HomePageContentState extends State<HomePageContent> {
           );
         },
       },
-      {'icon': Icons.feedback, 'label': '反馈', 'onTap': () => debugPrint('反馈')},
-      {'icon': Icons.info, 'label': '关于', 'onTap': () => debugPrint('关于')},
-      {'icon': Icons.bookmark, 'label': '书签', 'onTap': () => debugPrint('书签')},
+      {
+        'icon': Icons.feedback,
+        'label': 'feedback'.tr(),
+        'onTap': () => debugPrint('反馈'),
+      },
+      {
+        'icon': Icons.info,
+        'label': 'about'.tr(),
+        'onTap': () => debugPrint('关于'),
+      },
+      {
+        'icon': Icons.bookmark,
+        'label': 'bookmark'.tr(),
+        'onTap': () => debugPrint('书签'),
+      },
       {
         'icon': Icons.notifications,
-        'label': '通知',
+        'label': 'notification'.tr(),
         'onTap': () => debugPrint('通知'),
       },
-      {'icon': Icons.language, 'label': '语言', 'onTap': () => debugPrint('语言')},
+      {
+        'icon': Icons.language,
+        'label': 'language'.tr(),
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => SettingLocalizationPage()),
+          );
+        },
+      },
       {
         'icon': Icons.palette,
-        'label': '主题',
+        'label': 'theme'.tr(),
         'onTap': () {
           Navigator.push(
             context,
@@ -319,7 +342,7 @@ class _HomePageContentState extends State<HomePageContent> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '快捷功能',
+          'quickActions'.tr(),
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
             fontSize: 18,
@@ -351,7 +374,7 @@ class _HomePageContentState extends State<HomePageContent> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          '热搜榜',
+          'hotList'.tr(),
           style: Theme.of(
             context,
           ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
@@ -411,7 +434,7 @@ class _HomePageContentState extends State<HomePageContent> {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      '热度：${item['heat_score']}',
+                      '${'heat'.tr()}：${item['heat_score']}',
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: subTextColor,
                         fontSize: 15,
@@ -460,7 +483,7 @@ class _HomePageContentState extends State<HomePageContent> {
             style: Theme.of(context).textTheme.titleMedium,
           ),
           subtitle: Text(
-            '热度：${item['heat_score']}',
+            '${'heat'.tr()}：${item['heat_score']}',
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           trailing: Icon(Icons.chevron_right),
@@ -495,7 +518,7 @@ class _HomePageContentState extends State<HomePageContent> {
             style: Theme.of(context).textTheme.titleMedium,
           ),
           subtitle: Text(
-            '热度：${item['heat_score']}',
+            '${'heat'.tr()}：${item['heat_score']}',
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           trailing: Icon(Icons.chevron_right),
@@ -570,11 +593,18 @@ class _QuickAction extends StatelessWidget {
             child: Icon(icon, color: iconColor),
           ),
           SizedBox(height: 6),
-          Text(
-            label,
-            style: Theme.of(
-              context,
-            ).textTheme.bodyMedium?.copyWith(fontSize: 13),
+          Tooltip(
+            message: label,
+            child: Text(
+              label,
+              overflow: TextOverflow.ellipsis,
+              softWrap: false,
+              maxLines: 1,
+              textAlign: TextAlign.center,
+              style: Theme.of(
+                context,
+              ).textTheme.bodyMedium?.copyWith(fontSize: 11),
+            ),
           ),
         ],
       ),

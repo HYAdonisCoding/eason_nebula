@@ -1,40 +1,44 @@
+import 'package:eason_nebula/ui/HomePage.dart';
+import 'package:eason_nebula/ui/LoginPage.dart';
+import 'package:eason_nebula/ui/PersonalInfoInput.dart';
 import 'package:eason_nebula/ui/AboutPage.dart';
-import 'package:eason_nebula/ui/CarDataTablePage.dart';
 import 'package:eason_nebula/ui/CarPage.dart';
-import 'package:eason_nebula/ui/DataTablePage.dart';
-import 'package:eason_nebula/ui/PaginatedDataTablePage.dart';
 import 'package:eason_nebula/ui/SimpleTablePage.dart';
+import 'package:eason_nebula/ui/PaginatedDataTablePage.dart';
+import 'package:eason_nebula/ui/DataTablePage.dart';
+import 'package:eason_nebula/ui/CarDataTablePage.dart';
 import 'package:eason_nebula/utils/EasonGlobal.dart';
 
-import '/ui/HomePage.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-import 'ui/LoginPage.dart';
-import 'ui/PersonalInfoInput.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:flutter/foundation.dart';
-
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 import 'package:eason_nebula/utils/global_theme_controller.dart';
-import 'package:flutter/services.dart';
+
+import 'package:easy_localization/easy_localization.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await EasyLocalization.ensureInitialized();
 
-  // 设置系统导航栏样式（可选）
+  // 设置系统导航栏样式
   SystemChrome.setSystemUIOverlayStyle(
     const SystemUiOverlayStyle(
       systemNavigationBarColor: Colors.black,
       systemNavigationBarIconBrightness: Brightness.light,
+      statusBarColor: Colors.transparent,
+      statusBarIconBrightness: Brightness.light,
     ),
   );
 
-  // 加载用户上次选择的主题模式
+  // 加载用户持久化主题
   await loadThemeModeFromPrefs();
 
-  // 初始化 WebView 平台
+  // WebView 平台初始化
   if (WebViewPlatform.instance == null) {
     if (defaultTargetPlatform == TargetPlatform.android) {
       WebViewPlatform.instance = AndroidWebViewPlatform();
@@ -43,14 +47,33 @@ void main() async {
     }
   }
 
-  // 启动应用
   runApp(
-    ValueListenableBuilder<ThemeMode>(
+    EasyLocalization(
+      supportedLocales: const [
+        Locale('zh', 'CN'),
+        Locale('en', 'US'),
+        Locale('zh', 'Hant'),
+        Locale('fr', 'FR'),
+        Locale('ko', 'KR'),
+      ],
+      path: 'lib/assets/translations',
+      fallbackLocale: const Locale('zh', 'CN'),
+      child: const MyAppRoot(),
+    ),
+  );
+}
+
+class MyAppRoot extends StatelessWidget {
+  const MyAppRoot({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<ThemeMode>(
       valueListenable: themeModeNotifier,
       builder: (context, mode, _) {
         return MaterialApp(
-          home: HomePage(),
           title: 'Eason Nebula',
+          home: HomePage(),
           themeMode: mode,
           theme: ThemeData(
             brightness: Brightness.light,
@@ -67,11 +90,11 @@ void main() async {
           darkTheme: ThemeData(
             brightness: Brightness.dark,
             scaffoldBackgroundColor: Colors.black,
-            appBarTheme: AppBarTheme(
+            appBarTheme: const AppBarTheme(
               backgroundColor: Colors.black,
               foregroundColor: Colors.white,
             ),
-            iconTheme: IconThemeData(color: Colors.white70),
+            iconTheme: const IconThemeData(color: Colors.white70),
             textTheme: Typography.whiteCupertino,
             colorScheme: const ColorScheme.dark(
               surface: Color(0xFF121212),
@@ -80,6 +103,9 @@ void main() async {
               secondary: Colors.grey,
             ),
           ),
+          localizationsDelegates: context.localizationDelegates,
+          supportedLocales: context.supportedLocales,
+          locale: context.locale,
           initialRoute: '/',
           navigatorKey: navigatorKey,
           routes: {
@@ -94,39 +120,6 @@ void main() async {
           },
         );
       },
-    ),
-  ); // This is the entry point of the application.
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Nebula',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color.fromARGB(255, 69, 26, 143),
-        ),
-      ),
-      home: const MyHomePage(title: 'Nebula'),
     );
   }
 }

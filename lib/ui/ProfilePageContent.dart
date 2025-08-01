@@ -4,6 +4,7 @@ import 'dart:math'; // 添加此导入
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Setting/SettingPage.dart';
 import 'CitySelectedPage.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ProfilePageContent extends StatefulWidget {
   @override
@@ -53,7 +54,7 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
     return Column(
       children: [
         EasonAppBar(
-          title: '我的',
+          title: 'myProfile'.tr(),
           menuItems: menuItems,
           showBack: false,
           leadingMenuItems: [
@@ -135,12 +136,12 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  _ProfileAction(icon: Icons.favorite, label: '收藏'),
-                  _ProfileAction(icon: Icons.history, label: '历史'),
-                  _ProfileAction(icon: Icons.wallet, label: '钱包'),
+                  _ProfileAction(icon: Icons.favorite, label: 'favorites'.tr()),
+                  _ProfileAction(icon: Icons.history, label: 'history'.tr()),
+                  _ProfileAction(icon: Icons.wallet, label: 'wallet'.tr()),
                   _ProfileAction(
                     icon: Icons.settings,
-                    label: '设置',
+                    label: 'settings'.tr(),
                     onTap: () {
                       Navigator.push(
                         context,
@@ -160,21 +161,21 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
                   children: [
                     ListTile(
                       leading: Icon(Icons.verified_user, color: Colors.blue),
-                      title: Text('实名认证'),
+                      title: Text('realNameAuth'.tr()),
                       trailing: Icon(Icons.chevron_right),
                       onTap: () {},
                     ),
                     Divider(height: 1),
                     ListTile(
                       leading: Icon(Icons.phone_android, color: Colors.green),
-                      title: Text('绑定手机'),
+                      title: Text('bindPhone'.tr()),
                       trailing: Icon(Icons.chevron_right),
                       onTap: () {},
                     ),
                     Divider(height: 1),
                     ListTile(
                       leading: Icon(Icons.lock, color: Colors.orange),
-                      title: Text('修改密码'),
+                      title: Text('changePassword'.tr()),
                       trailing: Icon(Icons.chevron_right),
                       onTap: () {},
                     ),
@@ -190,11 +191,11 @@ class _ProfilePageContentState extends State<ProfilePageContent> {
                     padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
                   ),
                   icon: Icon(Icons.logout),
-                  label: Text('退出登录', style: TextStyle(fontSize: 16)),
+                  label: Text('logout'.tr(), style: TextStyle(fontSize: 16)),
                   onPressed: () {
                     ScaffoldMessenger.of(
                       context,
-                    ).showSnackBar(SnackBar(content: Text('已退出登录')));
+                    ).showSnackBar(SnackBar(content: Text('loggedOut'.tr())));
                   },
                 ),
               ),
