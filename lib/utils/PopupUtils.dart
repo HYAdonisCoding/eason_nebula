@@ -18,11 +18,14 @@ class PopupUtils {
     final offset = renderBox.localToGlobal(Offset.zero, ancestor: overlay);
     final size = renderBox.size;
 
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final double popupWidth = isLandscape ? 240 : 180;
+
     // 计算弹窗位置
     final double screenWidth = overlay.size.width;
-    double left = offset.dx + size.width / 2 - 90; // 弹窗宽度 180
+    double left = offset.dx + size.width / 2 - popupWidth / 2;
     if (left < 10) left = 10;
-    if (left + 180 > screenWidth - 10) left = screenWidth - 190;
+    if (left + popupWidth > screenWidth - 10) left = screenWidth - popupWidth - 10;
 
     final double top = offset.dy + size.height + 5; // 距离按钮底部5px
     final double arrowLeft =
@@ -41,7 +44,7 @@ class PopupUtils {
             Positioned(
               left: left,
               top: top,
-              width: 180,
+              width: popupWidth,
               child: Material(
                 color: Colors.transparent,
                 child: Stack(
@@ -76,7 +79,11 @@ class PopupUtils {
                           return [
                             ListTile(
                               leading: Icon(item.icon, color: item.iconColor),
-                              title: Text(item.title),
+                              title: Text(
+                                item.title,
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: false,
+                              ),
                               onTap: () {
                                 _popupEntry?.remove();
                                 _popupEntry = null;

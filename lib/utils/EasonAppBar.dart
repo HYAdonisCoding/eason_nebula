@@ -33,6 +33,10 @@ class EasonAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.leadingMenuItems,
   }) : super(key: key);
 
+  static double getAppBarHeight(BuildContext context) {
+    return MediaQuery.of(context).orientation == Orientation.landscape ? 44.0 : 56.0;
+  }
+
   @override
   Size get preferredSize => Size.fromHeight(56);
   void showCustomPopup(BuildContext context) {
@@ -86,7 +90,7 @@ class EasonAppBar extends StatelessWidget implements PreferredSizeWidget {
       child: SafeArea(
         bottom: false,
         child: SizedBox(
-          height: preferredSize.height,
+          height: getAppBarHeight(context),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
