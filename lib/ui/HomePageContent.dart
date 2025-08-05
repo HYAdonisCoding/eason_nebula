@@ -5,6 +5,7 @@ import 'package:eason_nebula/ui/GesturePage.dart';
 import 'package:eason_nebula/ui/HotPhonePage.dart';
 import 'package:eason_nebula/ui/RankListenPage.dart';
 import 'package:eason_nebula/ui/ScanCodePage.dart';
+import 'package:eason_nebula/ui/Setting/FontPage.dart';
 import 'package:eason_nebula/ui/Setting/SettingLocalizationPage.dart';
 import 'package:eason_nebula/ui/Setting/SettingThemePage.dart';
 import 'package:eason_nebula/ui/WalletPage.dart';
@@ -22,6 +23,16 @@ import 'Setting/SettingPage.dart';
 import 'HotDetailPage.dart';
 import 'dart:math';
 import 'package:eason_nebula/utils/EasonGlobal.dart';
+import 'package:flutter_redux/flutter_redux.dart';
+import 'package:redux/redux.dart';
+import 'package:eason_nebula/utils/redux_app.dart';
+
+class _FontInfo {
+  final String fontFamily;
+  final double fontSize;
+
+  _FontInfo({required this.fontFamily, required this.fontSize});
+}
 
 class HomePageContent extends StatefulWidget {
   @override
@@ -59,82 +70,106 @@ class _HomePageContentState extends State<HomePageContent> {
 
   @override
   Widget build(BuildContext context) {
-    // 顶部菜单项
-    final menuItems = [
-      EasonMenuItem(
-        title: '扫一扫',
-        icon: Icons.qr_code_scanner,
-        iconColor: Colors.deepPurple,
-        onTap: () {
-          Navigator.push(
-            navigatorKey.currentContext!,
-            MaterialPageRoute(builder: (_) => ScanCodePage()),
-          );
-        },
+    return StoreConnector<AppState, _FontInfo>(
+      converter: (store) => _FontInfo(
+        fontFamily: store.state.fontFamily,
+        fontSize: store.state.fontSize,
       ),
-    ];
-
-    return Column(
-      children: [
-        // 自定义导航栏
-        EasonAppBar(title: '首页', menuItems: menuItems, showBack: false),
-        Expanded(
-          child: ListView(
-            padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-            children: [
-              _buildWelcomeCard(),
-              SizedBox(height: 24),
-              _buildQuickActions(),
-              SizedBox(height: 32),
-              _buildHotSearchSection(),
-            ],
+      builder: (context, fontInfo) {
+        // 顶部菜单项
+        final menuItems = [
+          EasonMenuItem(
+            title: '扫一扫',
+            icon: Icons.qr_code_scanner,
+            iconColor: Colors.deepPurple,
+            onTap: () {
+              Navigator.push(
+                navigatorKey.currentContext!,
+                MaterialPageRoute(builder: (_) => ScanCodePage()),
+              );
+            },
           ),
-        ),
-      ],
+        ];
+
+        return Column(
+          children: [
+            // 自定义导航栏
+            EasonAppBar(title: '首页', menuItems: menuItems, showBack: false),
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                children: [
+                  _buildWelcomeCard(),
+                  SizedBox(height: 24),
+                  _buildQuickActions(fontInfo),
+                  SizedBox(height: 32),
+                  _buildHotSearchSection(fontInfo),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 
   /// 欢迎卡片区域，显示欢迎语和用户信息
   Widget _buildWelcomeCard() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'welcomeBack'.tr(),
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 16),
-        Card(
-          elevation: 4,
-          color: Theme.of(context).cardColor,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.blueAccent,
-              child: Icon(Icons.person, color: Colors.white),
+    return StoreConnector<AppState, _FontInfo>(
+      converter: (store) => _FontInfo(
+        fontFamily: store.state.fontFamily,
+        fontSize: store.state.fontSize,
+      ),
+      builder: (context, fontInfo) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'welcomeBack'.tr(),
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontFamily: fontInfo.fontFamily,
+                fontSize: fontInfo.fontSize,
+              ),
             ),
-            title: Text(
-              'greeting'.tr(),
-              style: Theme.of(context).textTheme.titleMedium,
+            SizedBox(height: 16),
+            Card(
+              elevation: 4,
+              color: Theme.of(context).cardColor,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: ListTile(
+                leading: CircleAvatar(
+                  backgroundColor: Colors.blueAccent,
+                  child: Icon(Icons.person, color: Colors.white),
+                ),
+                title: Text(
+                  'greeting'.tr(),
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    fontFamily: fontInfo.fontFamily,
+                    fontSize: fontInfo.fontSize,
+                  ),
+                ),
+                subtitle: Text(
+                  "todayHello".tr(),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontFamily: fontInfo.fontFamily,
+                    fontSize: fontInfo.fontSize,
+                  ),
+                ),
+                trailing: Icon(Icons.arrow_forward_ios, size: 18),
+                onTap: () {},
+              ),
             ),
-            subtitle: Text(
-              "todayHello".tr(),
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-            trailing: Icon(Icons.arrow_forward_ios, size: 18),
-            onTap: () {},
-          ),
-        ),
-      ],
+          ],
+        );
+      },
     );
   }
 
   /// 快捷功能区，包含常用操作入口
-  Widget _buildQuickActions() {
+  Widget _buildQuickActions(_FontInfo fontInfo) {
     // 快捷功能数据
     final quickActions = [
       {
@@ -256,6 +291,16 @@ class _HomePageContentState extends State<HomePageContent> {
         },
       },
       {
+        'icon': Icons.font_download,
+        'label': 'fontSize'.tr(),
+        'onTap': () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => FontPage()),
+          );
+        },
+      },
+      {
         'icon': Icons.animation,
         'label': 'animation'.tr(),
         'onTap': () {
@@ -346,6 +391,7 @@ class _HomePageContentState extends State<HomePageContent> {
           style: Theme.of(context).textTheme.titleMedium?.copyWith(
             fontWeight: FontWeight.bold,
             fontSize: 18,
+            fontFamily: fontInfo.fontFamily,
           ),
         ),
         SizedBox(height: 12),
@@ -369,7 +415,7 @@ class _HomePageContentState extends State<HomePageContent> {
   }
 
   /// 热搜榜区，展示热搜数据
-  Widget _buildHotSearchSection() {
+  Widget _buildHotSearchSection(_FontInfo fontInfo) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -377,7 +423,10 @@ class _HomePageContentState extends State<HomePageContent> {
           'hotList'.tr(),
           style: Theme.of(
             context,
-          ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+          ).textTheme.titleLarge?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontFamily: fontInfo.fontFamily,
+              ),
         ),
         SizedBox(height: 16),
         if (_hotList.isEmpty)

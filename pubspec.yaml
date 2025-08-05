@@ -51,6 +51,7 @@ dependencies:
   flutter_inappwebview: ^6.1.5
   easy_localization: ^3.0.1
   scoped_model: ^2.0.0
+  flutter_redux: ^0.10.0
   flutter_localizations:
     sdk: flutter
 

@@ -65,5 +65,8 @@
   "german": "German",
   "japanese": "Japanese",
   "pushSoundVibrate": "Push, Sound, and Vibration",
-  "languageSetting": "语言设置"
+  "languageSetting": "语言设置",
+  "fonts": "Fonts",
+  "fontSize": "Font Size",
+  "fontFamily": "Font Family"
 }

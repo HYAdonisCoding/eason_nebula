@@ -65,5 +65,8 @@
   "german": "Allemand",
   "japanese": "Japonais",
   "pushSoundVibrate": "Notifications, son et vibration",
-  "languageSetting": "Paramètre de langue"
+  "languageSetting": "Paramètre de langue",
+  "fonts": "Polices",
+  "fontSize": "Taille de la police",
+  "fontFamily": "Famille de polices"
 }

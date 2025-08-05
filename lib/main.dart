@@ -9,9 +9,11 @@ import 'package:eason_nebula/ui/PaginatedDataTablePage.dart';
 import 'package:eason_nebula/ui/DataTablePage.dart';
 import 'package:eason_nebula/ui/CarDataTablePage.dart';
 import 'package:eason_nebula/utils/EasonGlobal.dart';
+import 'package:eason_nebula/utils/redux_app.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_redux/flutter_redux.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 import 'package:webview_flutter/webview_flutter.dart';
@@ -52,19 +54,22 @@ void main() async {
   await model.loadFromLocal(); // 读取本地数据
 
   runApp(
-    ScopedModel<Personalmodel>(
-      model: Personalmodel(),
-      child: EasyLocalization(
-        supportedLocales: const [
-          Locale('zh', 'CN'),
-          Locale('en', 'US'),
-          Locale('zh', 'Hant'),
-          Locale('fr', 'FR'),
-          Locale('ko', 'KR'),
-        ],
-        path: 'lib/assets/translations',
-        fallbackLocale: const Locale('zh', 'CN'),
-        child: const MyAppRoot(),
+    StoreProvider<AppState>(
+      store: store,
+      child: ScopedModel<Personalmodel>(
+        model: Personalmodel(),
+        child: EasyLocalization(
+          supportedLocales: const [
+            Locale('zh', 'CN'),
+            Locale('en', 'US'),
+            Locale('zh', 'Hant'),
+            Locale('fr', 'FR'),
+            Locale('ko', 'KR'),
+          ],
+          path: 'lib/assets/translations',
+          fallbackLocale: const Locale('zh', 'CN'),
+          child: const MyAppRoot(),
+        ),
       ),
     ),
   );

@@ -65,5 +65,8 @@
   "german": "독일어",
   "japanese": "일본어",
   "pushSoundVibrate": "푸시 알림, 소리 및 진동",
-  "languageSetting": "语言设置"
+  "languageSetting": "语言设置",
+  "fonts": "글꼴",
+  "fontSize": "글꼴 크기",
+  "fontFamily": "글꼴 패밀리"
 }
