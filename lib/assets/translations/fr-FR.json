@@ -68,5 +68,7 @@
   "languageSetting": "Paramètre de langue",
   "fonts": "Polices",
   "fontSize": "Taille de la police",
-  "fontFamily": "Famille de polices"
+  "fontFamily": "Famille de polices",
+  "Event1": "Événement 1",
+  "Event2": "Événement 2"
 }

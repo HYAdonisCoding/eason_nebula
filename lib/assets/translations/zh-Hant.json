@@ -65,5 +65,7 @@
   "languageSetting": "語言設定",
   "fonts": "字體",
   "fontSize": "字體大小",
-  "fontFamily": "字體系列"
+  "fontFamily": "字體系列",
+  "Event1": "事件 1",
+  "Event2": "事件 2"
 }

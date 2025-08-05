@@ -1,10 +1,12 @@
 import 'package:eason_nebula/ui/Animations/AnimationPage.dart';
 import 'package:eason_nebula/ui/DatabasePage.dart';
 import 'package:eason_nebula/ui/FileOperationPage.dart';
+import 'package:eason_nebula/ui/FirstEventPage.dart';
 import 'package:eason_nebula/ui/GesturePage.dart';
 import 'package:eason_nebula/ui/HotPhonePage.dart';
 import 'package:eason_nebula/ui/RankListenPage.dart';
 import 'package:eason_nebula/ui/ScanCodePage.dart';
+import 'package:eason_nebula/ui/SecondEventPage.dart';
 import 'package:eason_nebula/ui/Setting/FontPage.dart';
 import 'package:eason_nebula/ui/Setting/SettingLocalizationPage.dart';
 import 'package:eason_nebula/ui/Setting/SettingThemePage.dart';
@@ -312,6 +314,26 @@ class _HomePageContentState extends State<HomePageContent> {
         },
       },
       {
+        'icon': Icons.event,
+        'label': 'Event1'.tr(),
+        'onTap': () async {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => FirstEventPage()),
+          );
+        },
+      },
+      {
+        'icon': Icons.event_available,
+        'label': 'Event2'.tr(),
+        'onTap': () async {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => SecondEventPage()),
+          );
+        },
+      },
+      {
         'icon': Icons.share,
         'label': 'share'.tr(),
         'onTap': () async {
@@ -421,12 +443,10 @@ class _HomePageContentState extends State<HomePageContent> {
       children: [
         Text(
           'hotList'.tr(),
-          style: Theme.of(
-            context,
-          ).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.bold,
-                fontFamily: fontInfo.fontFamily,
-              ),
+          style: Theme.of(context).textTheme.titleLarge?.copyWith(
+            fontWeight: FontWeight.bold,
+            fontFamily: fontInfo.fontFamily,
+          ),
         ),
         SizedBox(height: 16),
         if (_hotList.isEmpty)

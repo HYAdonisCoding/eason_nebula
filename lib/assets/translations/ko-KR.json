@@ -68,5 +68,7 @@
   "languageSetting": "语言设置",
   "fonts": "글꼴",
   "fontSize": "글꼴 크기",
-  "fontFamily": "글꼴 패밀리"
+  "fontFamily": "글꼴 패밀리",
+  "Event1": "이벤트 1",
+  "Event2": "이벤트 2"
 }
